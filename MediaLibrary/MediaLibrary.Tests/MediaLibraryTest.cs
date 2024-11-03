@@ -1,4 +1,4 @@
-﻿using MediaLibrary.Domain;
+﻿using MediaLibrary.Domain.Entities;
 
 namespace MediaLibrary.Tests;
 

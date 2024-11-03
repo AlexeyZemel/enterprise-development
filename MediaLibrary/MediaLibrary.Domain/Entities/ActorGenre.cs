@@ -1,4 +1,4 @@
-﻿namespace MediaLibrary.Domain;
+﻿namespace MediaLibrary.Domain.Entities;
 
 /// <summary>
 /// Сущность для связи Актёры-Жанры
