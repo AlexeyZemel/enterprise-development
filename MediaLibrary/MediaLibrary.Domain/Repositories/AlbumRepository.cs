@@ -15,7 +15,7 @@ public class AlbumRepository : IRepository<Album>
 
     public Album? GetById(int id) => _albums.Find(a => a.Id == id);
 
-    public void Post(Album entity)
+    public Album? Post(Album entity)
     {
         throw new NotImplementedException();
     }

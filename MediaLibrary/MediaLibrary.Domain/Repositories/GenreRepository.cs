@@ -15,7 +15,7 @@ public class GenreRepository : IRepository<Genre>
 
     public Genre? GetById(int id) => _genres.Find(g => g.Id == id);
 
-    public void Post(Genre entity)
+    public Genre? Post(Genre entity)
     {
         throw new NotImplementedException();
     }

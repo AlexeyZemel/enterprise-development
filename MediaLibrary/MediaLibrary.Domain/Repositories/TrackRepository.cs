@@ -15,7 +15,7 @@ public class TrackRepository : IRepository<Track>
 
     public Track? GetById(int id) => _tracks.Find(t => t.Id == id);
 
-    public void Post(Track entity)
+    public Track? Post(Track entity)
     {
         throw new NotImplementedException();
     }

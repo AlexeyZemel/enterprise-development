@@ -15,7 +15,7 @@ public class ActorRepository : IRepository<Actor>
 
     public Actor? GetById(int id) => _actors.Find(a => a.Id == id);
 
-    public void Post(Actor entity)
+    public Actor? Post(Actor entity)
     {
         throw new NotImplementedException();
     }

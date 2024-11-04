@@ -21,9 +21,10 @@ public class ActorGenreRepository(GenreRepository genreRepository) : IRepository
 
     public ActorGenre? GetById(int id) => _actorGenres.Find(ag => ag.ActorId == id);
 
-    public void Post(ActorGenre entity)
+    public ActorGenre? Post(ActorGenre entity)
     {
         _actorGenres.Add(entity);
+        return entity;
     }
 
     public bool Put(int id, ActorGenre entity)

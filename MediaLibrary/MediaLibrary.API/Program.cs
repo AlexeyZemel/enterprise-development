@@ -1,3 +1,4 @@
+using MediaLibrary.API;
 using MediaLibrary.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +15,10 @@ builder.Services.AddSingleton<TrackRepository>();
 
 builder.Services.AddControllers();
 
+builder.Services.AddAutoMapper(typeof(Mapping));
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

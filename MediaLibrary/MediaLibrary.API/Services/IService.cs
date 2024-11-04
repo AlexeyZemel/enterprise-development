@@ -1,6 +1,6 @@
-﻿namespace MediaLibrary.Domain.Repositories;
+﻿namespace MediaLibrary.API.Services;
 
-public interface IRepository<T>
+public interface IService<T> 
 {
     public IEnumerable<T> GetAll();
     public T? GetById(int id);
