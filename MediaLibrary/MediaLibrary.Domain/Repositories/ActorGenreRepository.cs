@@ -5,7 +5,6 @@ namespace MediaLibrary.Domain.Repositories;
 public class ActorGenreRepository(GenreRepository genreRepository) : IRepository<ActorGenre>
 {
     private readonly List<ActorGenre> _actorGenres = [];
-
     public bool Delete(int id)
     {
         var value = GetById(id);
@@ -30,7 +29,6 @@ public class ActorGenreRepository(GenreRepository genreRepository) : IRepository
     public bool Put(int id, ActorGenre entity)
     {
         var oldValue = GetById(id);
-
         if (oldValue == null)
             return false;
 

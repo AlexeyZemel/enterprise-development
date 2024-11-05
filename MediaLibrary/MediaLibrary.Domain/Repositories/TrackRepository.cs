@@ -2,13 +2,19 @@
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class TrackRepository : IRepository<Track>
+public class TrackRepository(AlbumRepository albumRepository) : IRepository<Track>
 {
     private readonly List<Track> _tracks = [];
 
     public bool Delete(int id)
     {
-        throw new NotImplementedException();
+        var value = GetById(id);
+
+        if (value == null)
+            return false;
+
+        _tracks.Remove(value);
+        return true;
     }
 
     public IEnumerable<Track> GetAll() => _tracks;
@@ -17,11 +23,24 @@ public class TrackRepository : IRepository<Track>
 
     public Track? Post(Track entity)
     {
-        throw new NotImplementedException();
+        _tracks.Add(entity);
+        return entity;
     }
 
     public bool Put(int id, Track entity)
     {
-        throw new NotImplementedException();
+        var oldValue = GetById(id);
+        if (oldValue == null)
+            return false;
+
+        var album = albumRepository.GetById(entity.AlbumId);
+        if (album == null)
+            return false;
+
+        oldValue.Name = entity.Name;
+        oldValue.Number = entity.Number;
+        oldValue.AlbumId = entity.AlbumId;
+        oldValue.Time = entity.Time;
+        return true;
     }
 }

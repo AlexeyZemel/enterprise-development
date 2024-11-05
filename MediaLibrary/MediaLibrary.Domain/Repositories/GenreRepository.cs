@@ -8,7 +8,13 @@ public class GenreRepository : IRepository<Genre>
 
     public bool Delete(int id)
     {
-        throw new NotImplementedException();
+        var value = GetById(id);
+
+        if (value == null)
+            return false;
+
+        _genres.Remove(value);
+        return true;
     }
 
     public IEnumerable<Genre> GetAll() => _genres;
@@ -17,11 +23,17 @@ public class GenreRepository : IRepository<Genre>
 
     public Genre? Post(Genre entity)
     {
-        throw new NotImplementedException();
+        _genres.Add(entity);
+        return entity;
     }
 
     public bool Put(int id, Genre entity)
     {
-        throw new NotImplementedException();
+        var oldValue = GetById(id);
+        if (oldValue == null) 
+            return false;
+
+        oldValue.Name = entity.Name;
+        return true;
     }
 }
