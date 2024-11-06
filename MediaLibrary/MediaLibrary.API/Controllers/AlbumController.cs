@@ -2,22 +2,31 @@
 using MediaLibrary.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MediaLibrary.API.Controllers;
 
+/// <summary>
+/// Контроллер для управления альбомами 
+/// </summary>
+/// <param name="albumService">Сервис для работы с альбомами</param>
 [Route("api/[controller]")]
 [ApiController]
 public class AlbumController(AlbumService albumService) : ControllerBase
 {
-    // GET: api/<AlbumController>
+    /// <summary>
+    /// Возвращает список всех альбомов
+    /// </summary>
+    /// <returns>Список альбомов</returns>
     [HttpGet]
     public ActionResult<IEnumerable<AlbumDto>> Get()
     {
         return Ok(albumService.GetAll());
     }
 
-    // GET api/<AlbumController>/5
+    /// <summary>
+    /// Возвращает альбом по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор альбом</param>
+    /// <returns>Альбом или "Не найдено"</returns>
     [HttpGet("{id}")]
     public ActionResult<AlbumDto> Get(int id)
     {
@@ -28,7 +37,11 @@ public class AlbumController(AlbumService albumService) : ControllerBase
         return Ok(result);
     }
 
-    // POST api/<AlbumController>
+    /// <summary>
+    /// Добавляет новый альбом 
+    /// </summary>
+    /// <param name="value">Информация о новом альбоме</param>
+    /// <returns>Добавленный альбом или "Плохой запрос"</returns>
     [HttpPost]
     public ActionResult<AlbumDto> Post([FromBody] AlbumDto value)
     {
@@ -39,7 +52,12 @@ public class AlbumController(AlbumService albumService) : ControllerBase
         return Ok(result);
     }
 
-    // PUT api/<AlbumController>/5
+    /// <summary>
+    /// Изменяет альбом по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор альбома</param>
+    /// <param name="value">Обновлённая информация об альбоме</param>
+    /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
     public ActionResult Put(int id, [FromBody] AlbumDto value)
     {
@@ -50,7 +68,11 @@ public class AlbumController(AlbumService albumService) : ControllerBase
         return Ok();
     }
 
-    // DELETE api/<AlbumController>/5
+    /// <summary>
+    /// Удаляет альбом по идентификатору 
+    /// </summary>
+    /// <param name="id">Идентификатор альбома</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {

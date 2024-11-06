@@ -2,22 +2,31 @@
 using MediaLibrary.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MediaLibrary.API.Controllers;
 
+/// <summary>
+/// Контроллер для управления жанрами  
+/// </summary>
+/// <param name="genreService">Сервис для работы с жанрами</param>
 [Route("api/[controller]")]
 [ApiController]
 public class GenreController(GenreService genreService) : ControllerBase
 {
-    // GET: api/<GenreController>
+    /// <summary>
+    /// Возвращает список всех жанров
+    /// </summary>
+    /// <returns>Список жанров</returns>
     [HttpGet]
     public ActionResult<IEnumerable<GenreDto>> Get()
     {
         return Ok(genreService.GetAll());
     }
 
-    // GET api/<GenreController>/5
+    /// <summary>
+    /// Возвращает жанр по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор жанра</param>
+    /// <returns>Жанр или "Не найдено"</returns>
     [HttpGet("{id}")]
     public ActionResult<GenreDto> Get(int id)
     {
@@ -28,7 +37,11 @@ public class GenreController(GenreService genreService) : ControllerBase
         return Ok(result);
     }
 
-    // POST api/<GenreController>
+    /// <summary>
+    /// Добавляет новый жанр 
+    /// </summary>
+    /// <param name="value">Информация о новом жанре</param>
+    /// <returns>Добавленный жанр или "Плохой запрос"</returns>
     [HttpPost]
     public ActionResult<GenreDto> Post([FromBody] GenreDto value)
     {
@@ -39,7 +52,12 @@ public class GenreController(GenreService genreService) : ControllerBase
         return Ok(result);
     }
 
-    // PUT api/<GenreController>/5
+    /// <summary>
+    /// Изменяет жанр по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор жанра</param>
+    /// <param name="value">Обновлённая информация о жанре</param>
+    /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
     public ActionResult Put(int id, [FromBody] GenreDto value)
     {
@@ -50,7 +68,11 @@ public class GenreController(GenreService genreService) : ControllerBase
         return Ok();
     }
 
-    // DELETE api/<GenreController>/5
+    /// <summary>
+    /// Удаляет жанр по идентификатору 
+    /// </summary>
+    /// <param name="id">Идентификатор жанра</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {

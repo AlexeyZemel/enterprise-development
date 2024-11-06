@@ -1,9 +1,9 @@
 ﻿namespace MediaLibrary.API.Dto;
 
 /// <summary>
-/// Dto для исполнителя
+/// Dto для исполнителя с количеством альбомов
 /// </summary>
-public class ActorDto
+public class AlbumsActorsDto
 {
     /// <summary>
     /// Имя исполнителя
@@ -14,4 +14,9 @@ public class ActorDto
     /// Описание исполнителя 
     /// </summary>
     public required string Description { get; set; }
+
+    /// <summary>
+    /// Количество альбомов у исполнителя 
+    /// </summary>
+    public required int AlbumsCount { get; set; }
 }

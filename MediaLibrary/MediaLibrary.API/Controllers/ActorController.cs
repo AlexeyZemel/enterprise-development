@@ -4,18 +4,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediaLibrary.API.Controllers;
 
+/// <summary>
+/// Контроллер для управления исполнителями 
+/// </summary>
+/// <param name="actorService">Сервис для работы с исполнителями</param>
 [Route("api/[controller]")]
 [ApiController]
 public class ActorController(ActorService actorService) : ControllerBase
 {
-    // GET: api/<ActorController>
+    /// <summary>
+    /// Возвращает список всех исполниетелей
+    /// </summary>
+    /// <returns>Список исполнителей</returns>
     [HttpGet]
     public ActionResult<IEnumerable<ActorDto>> Get()
     {
         return Ok(actorService.GetAll());
     }
 
-    // GET api/<ActorController>/5
+    /// <summary>
+    /// Возвращает исполнителя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор исполнителя</param>
+    /// <returns>Исполнитель или "Не найдено"</returns>
     [HttpGet("{id}")]
     public ActionResult<ActorDto> Get(int id)
     {
@@ -26,7 +37,11 @@ public class ActorController(ActorService actorService) : ControllerBase
         return Ok(result);
     }
 
-    // POST api/<ActorController>
+    /// <summary>
+    /// Добавляет нового исполнителя 
+    /// </summary>
+    /// <param name="value">Информация о новом исполнителе</param>
+    /// <returns>Добавленный исполнитель или "Плохой запрос"</returns>
     [HttpPost]
     public ActionResult<ActorDto> Post([FromBody] ActorDto value)
     {
@@ -37,7 +52,12 @@ public class ActorController(ActorService actorService) : ControllerBase
         return Ok(result);
     }
 
-    // PUT api/<ActorController>/5
+    /// <summary>
+    /// Изменяет исполнителя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор исполниетеля</param>
+    /// <param name="value">Обновлённая информация о исполнителе</param>
+    /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
     public ActionResult Put(int id, [FromBody] ActorDto value)
     {
@@ -48,7 +68,11 @@ public class ActorController(ActorService actorService) : ControllerBase
         return Ok();
     }
 
-    // DELETE api/<ActorController>/5
+    /// <summary>
+    /// Удаляет исполнителя по идентификатору 
+    /// </summary>
+    /// <param name="id">Идентификатор исполнителя</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {

@@ -4,18 +4,29 @@ using MediaLibrary.API.Services;
 
 namespace MediaLibrary.API.Controllers;
 
+/// <summary>
+/// Контроллер для управления инофрмацией о жанрах и исполнителях  
+/// </summary>
+/// <param name="actorGenreService">Сервис для работы со связями "исполнитель - жанр"</param>
 [Route("api/[controller]")]
 [ApiController]
 public class ActorGenreController(ActorGenreService actorGenreService) : ControllerBase
 {
-    // GET: api/<ActorGenreController>
+    /// <summary>
+    /// Возвращает список всех связей "исполнитель - жанр"
+    /// </summary>
+    /// <returns>Список всех связей</returns>
     [HttpGet]
     public ActionResult<IEnumerable<ActorGenre>> Get()
     {
         return Ok(actorGenreService.GetAll());
     }
 
-    // GET api/<ActorGenreController>/5
+    /// <summary>
+    /// Возвращает жанр исполнителя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор исполнителя</param>
+    /// <returns>Жанр или "Не найдено"</returns>
     [HttpGet("{id}")]
     public ActionResult<ActorGenre> Get(int id)
     {
@@ -26,7 +37,11 @@ public class ActorGenreController(ActorGenreService actorGenreService) : Control
         return Ok(result);
     }
 
-    // POST api/<ActorGenreController>
+    /// <summary>
+    /// Добавляет новую связь "исполнитель - жанр" 
+    /// </summary>
+    /// <param name="value">Информация о новой связи</param>
+    /// <returns>Добавленная связь или "Плохой запрос"</returns>
     [HttpPost]
     public ActionResult<ActorGenre> Post([FromBody] ActorGenre value)
     {
@@ -37,7 +52,12 @@ public class ActorGenreController(ActorGenreService actorGenreService) : Control
         return Ok(result);
     }
 
-    // PUT api/<ActorGenreController>/5
+    /// <summary>
+    /// Изменяет связь "исполнитель - жанр" по идентификатору исполнителя
+    /// </summary>
+    /// <param name="id">Идентификатор исполниетеля</param>
+    /// <param name="value">Обновлённая информация о связи</param>
+    /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
     public ActionResult Put(int id, [FromBody] ActorGenre value)
     {
@@ -48,7 +68,11 @@ public class ActorGenreController(ActorGenreService actorGenreService) : Control
         return Ok();
     }
 
-    // DELETE api/<ActorGenreController>/5
+    /// <summary>
+    /// Удаляет связь "исполнитель - жанр" по идентификатору исполнителя
+    /// </summary>
+    /// <param name="id">Идентификатор исполнителя</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {

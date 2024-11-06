@@ -1,9 +1,9 @@
 ﻿namespace MediaLibrary.API.Dto;
 
 /// <summary>
-/// Dto для альбома
+/// Dto для альбома с продолжительностью треков в нём
 /// </summary>
-public class AlbumDto
+public class TopAlbumsDto
 {
     /// <summary>
     /// Идентификатор исполнителя
@@ -19,4 +19,9 @@ public class AlbumDto
     /// Дата релиза
     /// </summary>
     public required DateTime Date { get; set; }
+
+    /// <summary>
+    /// Продолжительность треков в альбоме
+    /// </summary>
+    public required double TotalTime { get; set; }
 }

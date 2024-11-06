@@ -1,5 +1,8 @@
 ﻿namespace MediaLibrary.API.Dto;
 
+/// <summary>
+/// Dto для треков
+/// </summary>
 public class TrackDto
 {
     /// <summary>

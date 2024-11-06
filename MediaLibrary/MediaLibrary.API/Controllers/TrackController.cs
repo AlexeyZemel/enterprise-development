@@ -2,22 +2,31 @@
 using MediaLibrary.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MediaLibrary.API.Controllers;
 
+/// <summary>
+/// Контроллер для управления треками  
+/// </summary>
+/// <param name="trackService">Сервис для работы с треками</param>
 [Route("api/[controller]")]
 [ApiController]
 public class TrackController(TrackService trackService) : ControllerBase
 {
-    // GET: api/<TrackController>
+    /// <summary>
+    /// Возвращает список всех треков
+    /// </summary>
+    /// <returns>Список треков</returns>
     [HttpGet]
     public ActionResult<IEnumerable<TrackDto>> Get()
     {
         return Ok(trackService.GetAll());
     }
 
-    // GET api/<TrackController>/5
+    /// <summary>
+    /// Возвращает трек по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор трека</param>
+    /// <returns>Трек или "Не найдено"</returns>
     [HttpGet("{id}")]
     public ActionResult<TrackDto> Get(int id)
     {
@@ -28,7 +37,11 @@ public class TrackController(TrackService trackService) : ControllerBase
         return Ok(result);
     }
 
-    // POST api/<TrackController>
+    /// <summary>
+    /// Добавляет новый трек 
+    /// </summary>
+    /// <param name="value">Информация о новом треке</param>
+    /// <returns>Добавленный трек или "Плохой запрос"</returns>
     [HttpPost]
     public ActionResult<TrackDto> Post([FromBody] TrackDto value)
     {
@@ -39,7 +52,12 @@ public class TrackController(TrackService trackService) : ControllerBase
         return Ok(result);
     }
 
-    // PUT api/<TrackController>/5
+    /// <summary>
+    /// Изменяет трек по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор трека</param>
+    /// <param name="value">Обновлённая информация о треке</param>
+    /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
     public ActionResult Put(int id, [FromBody] TrackDto value)
     {
@@ -50,7 +68,11 @@ public class TrackController(TrackService trackService) : ControllerBase
         return Ok();
     }
 
-    // DELETE api/<TrackController>/5
+    /// <summary>
+    /// Удаляет трек по идентификатору 
+    /// </summary>
+    /// <param name="id">Идентификатор трека</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
