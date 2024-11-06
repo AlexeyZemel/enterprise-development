@@ -2,7 +2,6 @@
 using MediaLibrary.API.Dto;
 using MediaLibrary.Domain.Entities;
 using MediaLibrary.Domain.Repositories;
-using Microsoft.OpenApi.Validations;
 
 namespace MediaLibrary.API.Services;
 
