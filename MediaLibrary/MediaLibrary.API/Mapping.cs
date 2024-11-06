@@ -9,6 +9,8 @@ public class Mapping : Profile
     public Mapping()
     {
         CreateMap<Actor, ActorDto>().ReverseMap();
-        // more
+        CreateMap<Album, AlbumDto>().ReverseMap();
+        CreateMap<Track, TrackDto>().ReverseMap();
+        CreateMap<Genre, GenreDto>().ReverseMap();
     }
 }
