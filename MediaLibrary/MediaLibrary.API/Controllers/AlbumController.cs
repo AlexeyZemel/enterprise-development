@@ -1,6 +1,6 @@
 ﻿using MediaLibrary.API.Dto;
+using MediaLibrary.API.Services;
 using MediaLibrary.Domain.Entities;
-using MediaLibrary.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaLibrary.API.Controllers;
@@ -8,10 +8,10 @@ namespace MediaLibrary.API.Controllers;
 /// <summary>
 /// Контроллер для управления альбомами 
 /// </summary>
-/// <param name="albumRepository">Репозиторий для работы с альбомами</param>
+/// <param name="albumService">Репозиторий для работы с альбомами</param>
 [Route("api/[controller]")]
 [ApiController]
-public class AlbumController(IRepository<Album> albumRepository) : ControllerBase
+public class AlbumController(IService<AlbumDto, Album> albumService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех альбомов
@@ -20,7 +20,7 @@ public class AlbumController(IRepository<Album> albumRepository) : ControllerBas
     [HttpGet]
     public ActionResult<IEnumerable<Album>> Get()
     {
-        return Ok(albumRepository.GetAll());
+        return Ok(albumService.GetAll());
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class AlbumController(IRepository<Album> albumRepository) : ControllerBas
     [HttpGet("{id}")]
     public ActionResult<Album> Get(int id)
     {
-        var result = albumRepository.GetById(id);
+        var result = albumService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -44,9 +44,9 @@ public class AlbumController(IRepository<Album> albumRepository) : ControllerBas
     /// <param name="value">Информация о новом альбоме</param>
     /// <returns>Добавленный альбом или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Album> Post([FromBody] Album value)
+    public ActionResult<Album> Post([FromBody] AlbumDto value)
     {
-        var result = albumRepository.Post(value);
+        var result = albumService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -60,9 +60,9 @@ public class AlbumController(IRepository<Album> albumRepository) : ControllerBas
     /// <param name="value">Обновлённая информация об альбоме</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] Album value)
+    public ActionResult Put(int id, [FromBody] AlbumDto value)
     {
-        var result = albumRepository.Put(id, value);
+        var result = albumService.Put(id, value);
         if (!result)
             return BadRequest();
 
@@ -77,7 +77,7 @@ public class AlbumController(IRepository<Album> albumRepository) : ControllerBas
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
-        var result = albumRepository.Delete(id);
+        var result = albumService.Delete(id);
         if (!result)
             return BadRequest();
 

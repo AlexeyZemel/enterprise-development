@@ -1,5 +1,6 @@
-﻿using MediaLibrary.Domain.Entities;
-using MediaLibrary.Domain.Repositories;
+﻿using MediaLibrary.API.Dto;
+using MediaLibrary.API.Services;
+using MediaLibrary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaLibrary.API.Controllers;
@@ -7,10 +8,10 @@ namespace MediaLibrary.API.Controllers;
 /// <summary>
 /// Контроллер для управления жанрами  
 /// </summary>
-/// <param name="genreRepository">Сервис для работы с жанрами</param>
+/// <param name="genreService">Сервис для работы с жанрами</param>
 [Route("api/[controller]")]
 [ApiController]
-public class GenreController(IRepository<Genre> genreRepository) : ControllerBase
+public class GenreController(IService<GenreDto, Genre> genreService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех жанров
@@ -19,7 +20,7 @@ public class GenreController(IRepository<Genre> genreRepository) : ControllerBas
     [HttpGet]
     public ActionResult<IEnumerable<Genre>> Get()
     {
-        return Ok(genreRepository.GetAll());
+        return Ok(genreService.GetAll());
     }
 
     /// <summary>
@@ -30,7 +31,7 @@ public class GenreController(IRepository<Genre> genreRepository) : ControllerBas
     [HttpGet("{id}")]
     public ActionResult<Genre> Get(int id)
     {
-        var result = genreRepository.GetById(id);
+        var result = genreService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -43,9 +44,9 @@ public class GenreController(IRepository<Genre> genreRepository) : ControllerBas
     /// <param name="value">Информация о новом жанре</param>
     /// <returns>Добавленный жанр или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Genre> Post([FromBody] Genre value)
+    public ActionResult<Genre> Post([FromBody] GenreDto value)
     {
-        var result = genreRepository.Post(value);
+        var result = genreService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -59,9 +60,9 @@ public class GenreController(IRepository<Genre> genreRepository) : ControllerBas
     /// <param name="value">Обновлённая информация о жанре</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] Genre value)
+    public ActionResult Put(int id, [FromBody] GenreDto value)
     {
-        var result = genreRepository.Put(id, value);
+        var result = genreService.Put(id, value);
         if (!result) 
             return BadRequest();
 
@@ -76,7 +77,7 @@ public class GenreController(IRepository<Genre> genreRepository) : ControllerBas
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
-        var result = genreRepository.Delete(id);
+        var result = genreService.Delete(id);
         if (!result)
             return NotFound();
 

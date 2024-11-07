@@ -14,12 +14,12 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddSingleton<IService<ActorDto>,ActorService>();
-builder.Services.AddSingleton<IService<AlbumDto>, AlbumService>();
-builder.Services.AddSingleton<IService<GenreDto>, GenreService>();
-builder.Services.AddSingleton<IService<TrackDto>, TrackService>();
+builder.Services.AddSingleton<IService<ActorDto, Actor>,ActorService>();
+builder.Services.AddSingleton<IService<AlbumDto, Album>, AlbumService>();
+builder.Services.AddSingleton<IService<GenreDto, Genre>, GenreService>();
+builder.Services.AddSingleton<IService<TrackDto, Track>, TrackService>();
 builder.Services.AddSingleton<QueryService>();
-builder.Services.AddSingleton<IService<ActorGenre>, ActorGenreService>();
+builder.Services.AddSingleton<IService<ActorGenreDto, ActorGenre>, ActorGenreService>();
 builder.Services.AddSingleton<IRepository<Actor>, ActorRepository>();
 builder.Services.AddSingleton<IRepository<Album>, AlbumRepository>();
 builder.Services.AddSingleton<IRepository<Track>, TrackRepository>();

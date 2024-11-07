@@ -1,5 +1,6 @@
-﻿using MediaLibrary.Domain.Entities;
-using MediaLibrary.Domain.Repositories;
+﻿using MediaLibrary.API.Dto;
+using MediaLibrary.API.Services;
+using MediaLibrary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaLibrary.API.Controllers;
@@ -7,10 +8,10 @@ namespace MediaLibrary.API.Controllers;
 /// <summary>
 /// Контроллер для управления исполнителями 
 /// </summary>
-/// <param name="actorRepository">Репозиторий для работы с исполнителями</param>
+/// <param name="actorService">Репозиторий для работы с исполнителями</param>
 [Route("api/[controller]")]
 [ApiController]
-public class ActorController(IRepository<Actor> actorRepository) : ControllerBase
+public class ActorController(IService<ActorDto, Actor> actorService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех исполниетелей
@@ -19,7 +20,7 @@ public class ActorController(IRepository<Actor> actorRepository) : ControllerBas
     [HttpGet]
     public ActionResult<IEnumerable<Actor>> Get()
     {
-        return Ok(actorRepository.GetAll());
+        return Ok(actorService.GetAll());
     }
 
     /// <summary>
@@ -30,7 +31,7 @@ public class ActorController(IRepository<Actor> actorRepository) : ControllerBas
     [HttpGet("{id}")]
     public ActionResult<Actor> Get(int id)
     {
-        var result = actorRepository.GetById(id);
+        var result = actorService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -43,9 +44,9 @@ public class ActorController(IRepository<Actor> actorRepository) : ControllerBas
     /// <param name="value">Информация о новом исполнителе</param>
     /// <returns>Добавленный исполнитель или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Actor> Post([FromBody] Actor value)
+    public ActionResult<Actor> Post([FromBody] ActorDto value)
     {
-        var result = actorRepository.Post(value);
+        var result = actorService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -59,9 +60,9 @@ public class ActorController(IRepository<Actor> actorRepository) : ControllerBas
     /// <param name="value">Обновлённая информация о исполнителе</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] Actor value)
+    public ActionResult Put(int id, [FromBody] ActorDto value)
     {
-        var result = actorRepository.Put(id, value);
+        var result = actorService.Put(id, value);
         if (!result)
             return BadRequest();
 
@@ -76,7 +77,7 @@ public class ActorController(IRepository<Actor> actorRepository) : ControllerBas
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
-        var result = actorRepository.Delete(id);
+        var result = actorService.Delete(id);
         if (!result)
             return NotFound();
 

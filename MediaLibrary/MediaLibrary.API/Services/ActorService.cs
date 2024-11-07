@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class ActorService(IRepository<Actor> actorRepository, IMapper mapper) : IService<ActorDto>
+public class ActorService(IRepository<Actor> actorRepository, IMapper mapper) : IService<ActorDto, Actor>
 {
     private int _id = 1;
     public bool Delete(int id)
@@ -13,23 +13,23 @@ public class ActorService(IRepository<Actor> actorRepository, IMapper mapper) : 
         return actorRepository.Delete(id);
     }
 
-    public IEnumerable<ActorDto> GetAll()
+    public IEnumerable<Actor> GetAll()
     {
         var actors = actorRepository.GetAll();
-        return mapper.Map<IEnumerable<ActorDto>>(actors);
+        return actors;
     }
 
-    public ActorDto? GetById(int id)
+    public Actor? GetById(int id)
     {
         var actor = actorRepository.GetById(id);
-        return actor == null ? null : mapper.Map<ActorDto>(actor);
+        return actor == null ? null : actor;
     }
 
-    public ActorDto? Post(ActorDto entity)
+    public Actor? Post(ActorDto entity)
     {
         var actor = mapper.Map<Actor>(entity);
         actor.Id = _id++;
-        return mapper.Map<ActorDto>(actorRepository.Post(actor));
+        return actorRepository.Post(actor);
     }
 
     public bool Put(int id, ActorDto entity)

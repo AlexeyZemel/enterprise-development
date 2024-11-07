@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class TrackService(IRepository<Track> trackRepository, IMapper mapper) : IService<TrackDto>
+public class TrackService(IRepository<Track> trackRepository, IMapper mapper) : IService<TrackDto, Track>
 {
     private int _id = 1;
     public bool Delete(int id)
@@ -13,23 +13,23 @@ public class TrackService(IRepository<Track> trackRepository, IMapper mapper) : 
         return trackRepository.Delete(id);
     }
 
-    public IEnumerable<TrackDto> GetAll()
+    public IEnumerable<Track> GetAll()
     {
         var tracks = trackRepository.GetAll();
-        return mapper.Map<IEnumerable<TrackDto>>(tracks);
+        return tracks;
     }
 
-    public TrackDto? GetById(int id)
+    public Track? GetById(int id)
     {
         var track = trackRepository.GetById(id);
-        return track == null ? null : mapper.Map<TrackDto>(track);
+        return track == null ? null : track;
     }
 
-    public TrackDto? Post(TrackDto entity)
+    public Track? Post(TrackDto entity)
     {
         var track = mapper.Map<Track>(entity);
         track.Id = _id++;
-        return mapper.Map<TrackDto>(trackRepository.Post(track));
+        return trackRepository.Post(track);
     }
 
     public bool Put(int id, TrackDto entity)

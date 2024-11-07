@@ -3,8 +3,9 @@
 /// <summary>
 /// Интерфейс для сервисов сущностей
 /// </summary>
+/// <typeparam name="Dto">Тип сущности Dto</typeparam>
 /// <typeparam name="T">Тип сущности</typeparam>
-public interface IService<T> 
+public interface IService<Dto, T> 
 {
     /// <summary>
     /// Получение всех сущностей
@@ -24,7 +25,7 @@ public interface IService<T>
     /// </summary>
     /// <param name="entity">Новая сущность</param>
     /// <returns>Добавленная сущность</returns>
-    public T? Post(T entity);
+    public T? Post(Dto entity);
 
     /// <summary>
     /// Обновляет сущность по идентификатору 
@@ -32,7 +33,7 @@ public interface IService<T>
     /// <param name="id">Идентификатор сущности</param>
     /// <param name="entity">Новая сущность</param>
     /// <returns>Результат операции</returns>
-    public bool Put(int id, T entity);
+    public bool Put(int id, Dto entity);
 
     /// <summary>
     /// Удаляет сущность по идентификатору 

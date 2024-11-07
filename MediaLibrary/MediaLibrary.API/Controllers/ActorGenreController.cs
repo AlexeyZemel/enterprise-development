@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediaLibrary.Domain.Entities;
 using MediaLibrary.API.Services;
-using MediaLibrary.Domain.Repositories;
+using MediaLibrary.API.Dto;
 
 namespace MediaLibrary.API.Controllers;
 
@@ -11,7 +11,7 @@ namespace MediaLibrary.API.Controllers;
 /// <param name="actorGenreService">Сервис для работы со связями "исполнитель - жанр"</param>
 [Route("api/[controller]")]
 [ApiController]
-public class ActorGenreController(IRepository<ActorGenre> actorGenreService) : ControllerBase
+public class ActorGenreController(IService<ActorGenreDto, ActorGenre> actorGenreService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех связей "исполнитель - жанр"
@@ -44,7 +44,7 @@ public class ActorGenreController(IRepository<ActorGenre> actorGenreService) : C
     /// <param name="value">Информация о новой связи</param>
     /// <returns>Добавленная связь или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<ActorGenre> Post([FromBody] ActorGenre value)
+    public ActionResult<ActorGenre> Post([FromBody] ActorGenreDto value)
     {
         var result = actorGenreService.Post(value);
         if (result == null)
@@ -60,7 +60,7 @@ public class ActorGenreController(IRepository<ActorGenre> actorGenreService) : C
     /// <param name="value">Обновлённая информация о связи</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] ActorGenre value)
+    public ActionResult Put(int id, [FromBody] ActorGenreDto value)
     {
         var result = actorGenreService.Put(id, value);
         if (!result)

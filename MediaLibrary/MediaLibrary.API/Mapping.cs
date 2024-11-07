@@ -18,5 +18,6 @@ public class Mapping : Profile
         CreateMap<Album, AlbumDto>().ReverseMap();
         CreateMap<Track, TrackDto>().ReverseMap();
         CreateMap<Genre, GenreDto>().ReverseMap();
+        CreateMap<ActorGenre, ActorGenreDto>().ReverseMap();
     }
 }

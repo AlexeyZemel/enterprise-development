@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class GenreService(IRepository<Genre> genreRepository, IMapper mapper) : IService<GenreDto>
+public class GenreService(IRepository<Genre> genreRepository, IMapper mapper) : IService<GenreDto, Genre>
 {
     private int _id = 1;
     public bool Delete(int id)
@@ -13,23 +13,23 @@ public class GenreService(IRepository<Genre> genreRepository, IMapper mapper) : 
         return genreRepository.Delete(id);
     }
 
-    public IEnumerable<GenreDto> GetAll()
+    public IEnumerable<Genre> GetAll()
     {
         var genres = genreRepository.GetAll();
-        return mapper.Map<IEnumerable<GenreDto>>(genres);
+        return genres;
     }
 
-    public GenreDto? GetById(int id)
+    public Genre? GetById(int id)
     {
         var genre = genreRepository.GetById(id);
-        return genre == null ? null : mapper.Map<GenreDto>(genre);
+        return genre == null ? null : genre;
     }
 
-    public GenreDto? Post(GenreDto entity)
+    public Genre? Post(GenreDto entity)
     {
         var genre = mapper.Map<Genre>(entity);
         genre.Id = _id++;
-        return mapper.Map<GenreDto>(genreRepository.Post(genre));
+        return genreRepository.Post(genre);
     }
 
     public bool Put(int id, GenreDto entity)
