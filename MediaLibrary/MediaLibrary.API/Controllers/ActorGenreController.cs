@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediaLibrary.Domain.Entities;
 using MediaLibrary.API.Services;
+using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Controllers;
 
@@ -10,7 +11,7 @@ namespace MediaLibrary.API.Controllers;
 /// <param name="actorGenreService">Сервис для работы со связями "исполнитель - жанр"</param>
 [Route("api/[controller]")]
 [ApiController]
-public class ActorGenreController(ActorGenreService actorGenreService) : ControllerBase
+public class ActorGenreController(IRepository<ActorGenre> actorGenreService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех связей "исполнитель - жанр"

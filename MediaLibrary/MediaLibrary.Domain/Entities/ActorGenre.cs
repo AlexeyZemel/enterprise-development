@@ -6,6 +6,10 @@
 public class ActorGenre
 {
     /// <summary>
+    /// Идентификатор
+    /// </summary>
+    public required int Id { get; set; }
+    /// <summary>
     /// Идентификатор Актёра
     /// </summary>
     public required int ActorId { get; set; }

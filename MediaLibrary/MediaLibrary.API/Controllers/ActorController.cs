@@ -1,5 +1,5 @@
-﻿using MediaLibrary.API.Dto;
-using MediaLibrary.API.Services;
+﻿using MediaLibrary.Domain.Entities;
+using MediaLibrary.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaLibrary.API.Controllers;
@@ -7,19 +7,19 @@ namespace MediaLibrary.API.Controllers;
 /// <summary>
 /// Контроллер для управления исполнителями 
 /// </summary>
-/// <param name="actorService">Сервис для работы с исполнителями</param>
+/// <param name="actorRepository">Репозиторий для работы с исполнителями</param>
 [Route("api/[controller]")]
 [ApiController]
-public class ActorController(ActorService actorService) : ControllerBase
+public class ActorController(IRepository<Actor> actorRepository) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех исполниетелей
     /// </summary>
     /// <returns>Список исполнителей</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<ActorDto>> Get()
+    public ActionResult<IEnumerable<Actor>> Get()
     {
-        return Ok(actorService.GetAll());
+        return Ok(actorRepository.GetAll());
     }
 
     /// <summary>
@@ -28,9 +28,9 @@ public class ActorController(ActorService actorService) : ControllerBase
     /// <param name="id">Идентификатор исполнителя</param>
     /// <returns>Исполнитель или "Не найдено"</returns>
     [HttpGet("{id}")]
-    public ActionResult<ActorDto> Get(int id)
+    public ActionResult<Actor> Get(int id)
     {
-        var result = actorService.GetById(id);
+        var result = actorRepository.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -43,9 +43,9 @@ public class ActorController(ActorService actorService) : ControllerBase
     /// <param name="value">Информация о новом исполнителе</param>
     /// <returns>Добавленный исполнитель или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<ActorDto> Post([FromBody] ActorDto value)
+    public ActionResult<Actor> Post([FromBody] Actor value)
     {
-        var result = actorService.Post(value);
+        var result = actorRepository.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -59,9 +59,9 @@ public class ActorController(ActorService actorService) : ControllerBase
     /// <param name="value">Обновлённая информация о исполнителе</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] ActorDto value)
+    public ActionResult Put(int id, [FromBody] Actor value)
     {
-        var result = actorService.Put(id, value);
+        var result = actorRepository.Put(id, value);
         if (!result)
             return BadRequest();
 
@@ -76,7 +76,7 @@ public class ActorController(ActorService actorService) : ControllerBase
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
-        var result = actorService.Delete(id);
+        var result = actorRepository.Delete(id);
         if (!result)
             return NotFound();
 

@@ -3,7 +3,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class ActorGenreService(ActorGenreRepository actorGenreRepository) : IService<ActorGenre>
+public class ActorGenreService(IRepository<ActorGenre> actorGenreRepository) : IService<ActorGenre>
 {
     public bool Delete(int id) => actorGenreRepository.Delete(id);
 

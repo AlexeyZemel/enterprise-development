@@ -2,7 +2,7 @@
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class TrackRepository(AlbumRepository albumRepository) : IRepository<Track>
+public class TrackRepository(IRepository<Album> albumRepository) : IRepository<Track>
 {
     private readonly List<Track> _tracks = [];
 
@@ -23,6 +23,10 @@ public class TrackRepository(AlbumRepository albumRepository) : IRepository<Trac
 
     public Track? Post(Track entity)
     {
+        var album = albumRepository.GetById(entity.AlbumId);
+        if (album == null)
+            return null;
+
         _tracks.Add(entity);
         return entity;
     }

@@ -10,8 +10,8 @@ namespace MediaLibrary.API.Services;
 /// <param name="actorRepository">Репозиторий исполнителей</param>
 /// <param name="trackRepository">Репозиторий треков</param>
 /// <param name="albumRepository">Репозиторий альбомов</param>
-public class QueryService(ActorRepository actorRepository, 
-    TrackRepository trackRepository, AlbumRepository albumRepository)
+public class QueryService(IRepository<Actor> actorRepository, 
+    IRepository<Track> trackRepository, IRepository<Album> albumRepository)
 {
     /// <summary>
     /// Возвращает список всех исполнителей

@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class GenreService(GenreRepository genreRepository, IMapper mapper) : IService<GenreDto>
+public class GenreService(IRepository<Genre> genreRepository, IMapper mapper) : IService<GenreDto>
 {
     private int _id = 1;
     public bool Delete(int id)

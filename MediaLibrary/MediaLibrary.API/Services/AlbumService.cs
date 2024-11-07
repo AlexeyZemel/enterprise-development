@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class AlbumService(AlbumRepository albumRepository, IMapper mapper) : IService<AlbumDto>
+public class AlbumService(IRepository<Album> albumRepository, IMapper mapper) : IService<AlbumDto>
 {
     private int _id = 1;
     public bool Delete(int id)

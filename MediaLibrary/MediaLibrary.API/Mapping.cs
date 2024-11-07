@@ -14,7 +14,7 @@ public class Mapping : Profile
     /// </summary>
     public Mapping()
     {
-        CreateMap<Actor, ActorDto>().ReverseMap();
+        CreateMap<Actor, Actor>().ReverseMap();
         CreateMap<Album, AlbumDto>().ReverseMap();
         CreateMap<Track, TrackDto>().ReverseMap();
         CreateMap<Genre, GenreDto>().ReverseMap();

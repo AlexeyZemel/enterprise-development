@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class ActorService(ActorRepository actorRepository, IMapper mapper) : IService<ActorDto>
+public class ActorService(IRepository<Actor> actorRepository, IMapper mapper) : IService<ActorDto>
 {
     private int _id = 1;
     public bool Delete(int id)

@@ -2,7 +2,8 @@
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class ActorGenreRepository(GenreRepository genreRepository) : IRepository<ActorGenre>
+public class ActorGenreRepository(IRepository<Genre> genreRepository, 
+    IRepository<Actor> actorRepository) : IRepository<ActorGenre>
 {
     private readonly List<ActorGenre> _actorGenres = [];
     public bool Delete(int id)
@@ -22,6 +23,14 @@ public class ActorGenreRepository(GenreRepository genreRepository) : IRepository
 
     public ActorGenre? Post(ActorGenre entity)
     {
+        var genre = genreRepository.GetById(entity.GenreId);
+        if (genre == null)
+            return null;
+
+        var actor = actorRepository.GetById(entity.ActorId);
+        if (actor == null)
+            return null;
+
         _actorGenres.Add(entity);
         return entity;
     }
@@ -30,6 +39,10 @@ public class ActorGenreRepository(GenreRepository genreRepository) : IRepository
     {
         var oldValue = GetById(id);
         if (oldValue == null)
+            return false;
+
+        var actor = actorRepository.GetById(entity.ActorId);
+        if (actor == null)
             return false;
 
         var genre = genreRepository.GetById(entity.GenreId);

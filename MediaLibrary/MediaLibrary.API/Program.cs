@@ -1,7 +1,8 @@
 using MediaLibrary.API;
+using MediaLibrary.API.Dto;
 using MediaLibrary.API.Services;
+using MediaLibrary.Domain.Entities;
 using MediaLibrary.Domain.Repositories;
-using Microsoft.Extensions.Options;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,17 +14,17 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddSingleton<ActorService>();
-builder.Services.AddSingleton<AlbumService>();
-builder.Services.AddSingleton<GenreService>();
-builder.Services.AddSingleton<TrackService>();
+builder.Services.AddSingleton<IService<ActorDto>,ActorService>();
+builder.Services.AddSingleton<IService<AlbumDto>, AlbumService>();
+builder.Services.AddSingleton<IService<GenreDto>, GenreService>();
+builder.Services.AddSingleton<IService<TrackDto>, TrackService>();
 builder.Services.AddSingleton<QueryService>();
-builder.Services.AddSingleton<ActorGenreService>();
-builder.Services.AddSingleton<ActorRepository>();
-builder.Services.AddSingleton<AlbumRepository>();
-builder.Services.AddSingleton<TrackRepository>();
-builder.Services.AddSingleton<GenreRepository>();
-builder.Services.AddSingleton<ActorGenreRepository>();
+builder.Services.AddSingleton<IService<ActorGenre>, ActorGenreService>();
+builder.Services.AddSingleton<IRepository<Actor>, ActorRepository>();
+builder.Services.AddSingleton<IRepository<Album>, AlbumRepository>();
+builder.Services.AddSingleton<IRepository<Track>, TrackRepository>();
+builder.Services.AddSingleton<IRepository<Genre>, GenreRepository>();
+builder.Services.AddSingleton<IRepository<ActorGenre>, ActorGenreRepository>();
 
 builder.Services.AddControllers();
 

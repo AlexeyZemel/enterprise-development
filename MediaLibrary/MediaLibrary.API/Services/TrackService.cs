@@ -5,7 +5,7 @@ using MediaLibrary.Domain.Repositories;
 
 namespace MediaLibrary.API.Services;
 
-public class TrackService(TrackRepository trackRepository, IMapper mapper) : IService<TrackDto>
+public class TrackService(IRepository<Track> trackRepository, IMapper mapper) : IService<TrackDto>
 {
     private int _id = 1;
     public bool Delete(int id)
