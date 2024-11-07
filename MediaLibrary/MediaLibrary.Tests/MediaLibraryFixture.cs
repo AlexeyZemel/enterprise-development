@@ -128,46 +128,55 @@ public class MediaLibraryFixture
         [
             new()
             {
+                Id = 1,
                 ActorId = 1,
                 GenreId = 1
             },
             new()
             {
+                Id = 2,
                 ActorId = 2,
                 GenreId = 1
             },
             new()
             {
+                Id = 3,
                 ActorId = 3,
                 GenreId = 1
             },
             new()
             {
+                Id = 4,
                 ActorId = 4,
                 GenreId = 2
             },
             new()
             {
+                Id = 5,
                 ActorId = 5,
                 GenreId = 3
             },
             new()
             {
+                Id = 6,
                 ActorId = 6,
                 GenreId = 4
             },
             new()
             {
+                Id = 7,
                 ActorId = 7,
                 GenreId = 1
             },
             new()
             {
+                Id = 8,
                 ActorId = 8,
                 GenreId = 5
             },
             new()
             {
+                Id = 9,
                 ActorId = 9,
                 GenreId = 1
             }
