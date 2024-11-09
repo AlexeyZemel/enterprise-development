@@ -21,7 +21,7 @@ public class QueryService(IRepository<Actor> actorRepository,
     {
         var actorInfo =
             (from actor in actorRepository.GetAll()
-            orderby actor
+            orderby actor.Name
             select actor)
             .ToList();
 
