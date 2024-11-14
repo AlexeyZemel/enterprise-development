@@ -14,8 +14,7 @@ public class ActorGenreService(IRepository<ActorGenre> actorGenreRepository, IMa
 
     public ActorGenre? GetById(int id)
     {
-        var value = actorGenreRepository.GetById(id);
-        return value == null ? null : value;
+        return actorGenreRepository.GetById(id);
     }
  
     public ActorGenre? Post(ActorGenreDto entity)

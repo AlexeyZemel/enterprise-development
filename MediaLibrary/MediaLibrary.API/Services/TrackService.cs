@@ -21,8 +21,7 @@ public class TrackService(IRepository<Track> trackRepository, IMapper mapper) : 
 
     public Track? GetById(int id)
     {
-        var track = trackRepository.GetById(id);
-        return track == null ? null : track;
+        return trackRepository.GetById(id);
     }
 
     public Track? Post(TrackDto entity)

@@ -21,8 +21,7 @@ public class ActorService(IRepository<Actor> actorRepository, IMapper mapper) : 
 
     public Actor? GetById(int id)
     {
-        var actor = actorRepository.GetById(id);
-        return actor == null ? null : actor;
+        return actorRepository.GetById(id);
     }
 
     public Actor? Post(ActorDto entity)

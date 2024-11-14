@@ -21,8 +21,7 @@ public class GenreService(IRepository<Genre> genreRepository, IMapper mapper) : 
 
     public Genre? GetById(int id)
     {
-        var genre = genreRepository.GetById(id);
-        return genre == null ? null : genre;
+        return genreRepository.GetById(id);
     }
 
     public Genre? Post(GenreDto entity)

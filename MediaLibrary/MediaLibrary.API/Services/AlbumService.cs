@@ -21,8 +21,7 @@ public class AlbumService(IRepository<Album> albumRepository, IMapper mapper) : 
 
     public Album? GetById(int id)
     {
-        var album = albumRepository.GetById(id);
-        return album == null ? null : album;
+        return albumRepository.GetById(id);
     }
 
     public Album? Post(AlbumDto entity)
