@@ -18,9 +18,9 @@ public class TrackController(IService<TrackDto, Track> trackService) : Controlle
     /// </summary>
     /// <returns>Список треков</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Track>> Get()
+    public async Task<ActionResult<IEnumerable<Track>>> Get()
     {
-        return Ok(trackService.GetAll());
+        return Ok(await trackService.GetAll());
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class TrackController(IService<TrackDto, Track> trackService) : Controlle
     /// <param name="id">Идентификатор трека</param>
     /// <returns>Трек или "Не найдено"</returns>
     [HttpGet("{id}")]
-    public ActionResult<Track> Get(int id)
+    public async Task<ActionResult<Track>> Get(int id)
     {
-        var result = trackService.GetById(id);
+        var result = await trackService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -44,9 +44,9 @@ public class TrackController(IService<TrackDto, Track> trackService) : Controlle
     /// <param name="value">Информация о новом треке</param>
     /// <returns>Добавленный трек или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Track> Post([FromBody] TrackDto value)
+    public async Task<ActionResult<Track>> Post([FromBody] TrackDto value)
     {
-        var result = trackService.Post(value);
+        var result = await trackService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -60,9 +60,9 @@ public class TrackController(IService<TrackDto, Track> trackService) : Controlle
     /// <param name="value">Обновлённая информация о треке</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] TrackDto value)
+    public async Task<ActionResult> Put(int id, [FromBody] TrackDto value)
     {
-        var result = trackService.Put(id, value);
+        var result = await trackService.Put(id, value);
         if (!result)
             return BadRequest();
 
@@ -75,9 +75,9 @@ public class TrackController(IService<TrackDto, Track> trackService) : Controlle
     /// <param name="id">Идентификатор трека</param>
     /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var result = trackService.Delete(id);
+        var result = await trackService.Delete(id);
         if (!result)
             return NotFound();
 

@@ -21,9 +21,9 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Список исполнителей</returns>
     [HttpGet]
     [Route("all-actors")]
-    public ActionResult<List<Actor>> GetAllActors()
+    public async Task<ActionResult<List<Actor>>> GetAllActors()
     {
-        return Ok(queryService.GetAllActors());
+        return Ok(await queryService.GetAllActors());
     }
 
     /// <summary>
@@ -33,9 +33,9 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Список треков в альбоме</returns>
     [HttpGet]
     [Route("tracks-in-album")]
-    public ActionResult<List<Track>> GetTracksInAlbum([FromQuery] int id)
+    public async Task<ActionResult<List<Track>>> GetTracksInAlbum([FromQuery] int id)
     {
-        return Ok(queryService.GetTracksInAlbum(id));
+        return Ok(await queryService.GetTracksInAlbum(id));
     }
 
     /// <summary>
@@ -45,10 +45,10 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Альбомы и количество треков в каждом</returns>
     [HttpGet]
     [Route("albums-info")]
-    public ActionResult<List<AlbumInfoDto>> GetAlbumsInfo([FromQuery, 
+    public async Task<ActionResult<List<AlbumInfoDto>>> GetAlbumsInfo([FromQuery, 
         Range(1900, 2024, ErrorMessage = "Год должен быть в диапазоне от 1900 до 2024")] int year)
     {
-        return Ok(queryService.GetAlbumsInfo(year));
+        return Ok(await queryService.GetAlbumsInfo(year));
     }
 
     /// <summary>
@@ -57,9 +57,9 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Топ 5 альбомов по продолжительности треков</returns>
     [HttpGet]
     [Route("top-albums")]
-    public ActionResult<List<TopAlbumsDto>> GetTopAlbums()
+    public async Task<ActionResult<List<TopAlbumsDto>>> GetTopAlbums()
     {
-        return Ok(queryService.GetTopAlbums());
+        return Ok(await queryService.GetTopAlbums());
     }
 
     /// <summary>
@@ -68,9 +68,9 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Авторы с макисмальным количеством альбомов</returns>
     [HttpGet]
     [Route("max-albums-actors")]
-    public ActionResult<List<AlbumsActorsDto>> GetMaxAlbumsActors()
+    public async Task<ActionResult<List<AlbumsActorsDto>>> GetMaxAlbumsActors()
     {
-        return Ok(queryService.GetMaxAlbumsActors());
+        return Ok(await queryService.GetMaxAlbumsActors());
     }
 
     /// <summary>
@@ -79,8 +79,8 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Минимальная, максимальная и средняя продолжительность альбомов</returns>
     [HttpGet]
     [Route("time-albums-info")]
-    public ActionResult<List<TimeAlbumDto>> GetTimeAlbumsInfo()
+    public async Task<ActionResult<List<TimeAlbumDto>>> GetTimeAlbumsInfo()
     {
-        return Ok(queryService.GetTimeAlbumsInfo());
+        return Ok(await queryService.GetTimeAlbumsInfo());
     }
 }

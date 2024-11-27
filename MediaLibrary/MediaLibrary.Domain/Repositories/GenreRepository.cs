@@ -1,39 +1,42 @@
 ﻿using MediaLibrary.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class GenreRepository : IRepository<Genre>
+public class GenreRepository(MediaLibraryContext context) : IRepository<Genre>
 {
-    private readonly List<Genre> _genres = [];
-
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var value = GetById(id);
+        var value = await GetById(id);
 
         if (value == null)
             return false;
 
-        _genres.Remove(value);
+        context.Genres.Remove(value);
+        await context.SaveChangesAsync();
         return true;
     }
 
-    public IEnumerable<Genre> GetAll() => _genres;
+    public async Task<IEnumerable<Genre>> GetAll() => await context.Genres.ToListAsync();
 
-    public Genre? GetById(int id) => _genres.Find(g => g.Id == id);
+    public async Task<Genre?> GetById(int id) => await context.Genres.FirstOrDefaultAsync(g => g.Id == id);
 
-    public Genre? Post(Genre entity)
+    public async Task<Genre?> Post(Genre entity)
     {
-        _genres.Add(entity);
+        context.Genres.Add(entity);
+        await context.SaveChangesAsync();
         return entity;
     }
 
-    public bool Put(int id, Genre entity)
+    public async Task<bool> Put(int id, Genre entity)
     {
-        var oldValue = GetById(id);
+        var oldValue = await GetById(id);
         if (oldValue == null) 
             return false;
 
         oldValue.Name = entity.Name;
+
+        await context.SaveChangesAsync();
         return true;
     }
 }

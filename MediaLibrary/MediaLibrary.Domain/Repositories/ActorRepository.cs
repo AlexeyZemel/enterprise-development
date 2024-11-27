@@ -1,40 +1,43 @@
 ﻿using MediaLibrary.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class ActorRepository : IRepository<Actor>
-{
-    private readonly List<Actor> _actors = [];
-    
-    public bool Delete(int id)
+public class ActorRepository(MediaLibraryContext context) : IRepository<Actor>
+{   
+    public async Task<bool> Delete(int id)
     {
-        var value = GetById(id);
+        var value = await GetById(id);
 
         if (value == null)
             return false;
 
-        _actors.Remove(value);
+        context.Actors.Remove(value);
+        await context.SaveChangesAsync();
         return true;
     }
 
-    public IEnumerable<Actor> GetAll() => _actors;
+    public async Task<IEnumerable<Actor>> GetAll() => await context.Actors.ToListAsync();
 
-    public Actor? GetById(int id) => _actors.Find(a => a.Id == id);
+    public async Task<Actor?> GetById(int id) => await context.Actors.FirstOrDefaultAsync(a => a.Id == id);
 
-    public Actor? Post(Actor entity)
+    public async Task<Actor?> Post(Actor entity)
     {
-        _actors.Add(entity);
+        context.Actors.Add(entity);
+        await context.SaveChangesAsync();
         return entity;
     }
 
-    public bool Put(int id, Actor entity)
+    public async Task<bool> Put(int id, Actor entity)
     {
-        var oldValue = GetById(id);
+        var oldValue = await GetById(id);
         if (oldValue == null)
             return false;
 
         oldValue.Name = entity.Name;
         oldValue.Description = entity.Description;
+
+        await context.SaveChangesAsync();
         return true;
     }
 }

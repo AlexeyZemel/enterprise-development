@@ -17,10 +17,10 @@ public class QueryService(IRepository<Actor> actorRepository,
     /// Возвращает список всех исполнителей
     /// </summary>
     /// <returns>Список исполнителей</returns>
-    public List<Actor> GetAllActors()
+    public async Task<List<Actor>> GetAllActors()
     {
-        var actorInfo =
-            (from actor in actorRepository.GetAll()
+        var actorInfo = 
+            (from actor in await actorRepository.GetAll()
             orderby actor.Name
             select actor)
             .ToList();
@@ -33,11 +33,11 @@ public class QueryService(IRepository<Actor> actorRepository,
     /// </summary>
     /// <param name="id">Идентификатор альбома</param>
     /// <returns>Список треков в альбоме</returns>
-    public List<Track> GetTracksInAlbum(int id)
+    public async Task<List<Track>> GetTracksInAlbum(int id)
     {
         var tracksInfo =
-            (from album in albumRepository.GetAll()
-             join track in trackRepository.GetAll() on album.Id equals track.AlbumId
+            (from album in await albumRepository.GetAll()
+             join track in await trackRepository.GetAll() on album.Id equals track.AlbumId
              where album.Id == id
              orderby track.Number
              select track)
@@ -51,12 +51,12 @@ public class QueryService(IRepository<Actor> actorRepository,
     /// </summary>
     /// <param name="year">Год альбома</param>
     /// <returns>Альбомы и количество треков в каждом</returns>
-    public List<AlbumInfoDto> GetAlbumsInfo(int year)
+    public async Task<List<AlbumInfoDto>> GetAlbumsInfo(int year)
     {
         var albumsInfo =
-            (from album in albumRepository.GetAll()
+            (from album in await albumRepository.GetAll()
              where album.Date.Year == year
-             join track in trackRepository.GetAll()
+             join track in await trackRepository.GetAll()
              on album.Id equals track.AlbumId into albumTracks
              select new AlbumInfoDto
              {
@@ -74,11 +74,11 @@ public class QueryService(IRepository<Actor> actorRepository,
     /// Выводит список топ 5 альбомов по продолжительности треков
     /// </summary>
     /// <returns>Топ 5 альбомов по продолжительности треков</returns>
-    public List<TopAlbumsDto> GetTopAlbums()
+    public async Task<List<TopAlbumsDto>> GetTopAlbums()
     {
         var topAlbums =
-            (from album in albumRepository.GetAll()
-             join track in trackRepository.GetAll()
+            (from album in await albumRepository.GetAll()
+             join track in await trackRepository.GetAll()
              on album.Id equals track.AlbumId into albumTracks
              group albumTracks by album into groupAlbums
              select new TopAlbumsDto
@@ -99,18 +99,20 @@ public class QueryService(IRepository<Actor> actorRepository,
     /// Возвращает авторов с макисмальным количеством альбомов
     /// </summary>
     /// <returns>Авторы с макисмальным количеством альбомов</returns>
-    public List<AlbumsActorsDto> GetMaxAlbumsActors()
+    public async Task<List<AlbumsActorsDto>> GetMaxAlbumsActors()
     {
+        var albums = await albumRepository.GetAll();
+
         var topActors =
-           (from album in albumRepository.GetAll()
+           (from album in albums
             group album by album.ActorId into albumGroup
             let albumCount = albumGroup.Count()
-            let maxAlbumCount =
-                       (from al in albumRepository.GetAll()
+            let maxAlbumCount = 
+                       (from al in albums
                         group al by al.ActorId into alGroup
                         select alGroup.Count()).Max()
             where albumCount == maxAlbumCount
-            join actor in actorRepository.GetAll()
+            join actor in await actorRepository.GetAll()
             on albumGroup.Key equals actor.Id
             select new AlbumsActorsDto
             {
@@ -127,10 +129,10 @@ public class QueryService(IRepository<Actor> actorRepository,
     /// Выводит информацио о минимальной, максимальной и средней продолжительности альбомов 
     /// </summary>
     /// <returns>Минимальная, максимальная и средняя продолжительность альбомов</returns>
-    public TimeAlbumDto GetTimeAlbumsInfo()
+    public async Task<TimeAlbumDto> GetTimeAlbumsInfo()
     {
         var albumsDurations =
-           (from track in trackRepository.GetAll()
+           (from track in await trackRepository.GetAll()
             group track by track.AlbumId into trackGroup
             select trackGroup.Sum(t => t.Time.TotalSeconds))
            .ToList();

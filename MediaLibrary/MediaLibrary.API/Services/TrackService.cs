@@ -7,33 +7,31 @@ namespace MediaLibrary.API.Services;
 
 public class TrackService(IRepository<Track> trackRepository, IMapper mapper) : IService<TrackDto, Track>
 {
-    private int _id = 1;
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return trackRepository.Delete(id);
+        return await trackRepository.Delete(id);
     }
 
-    public IEnumerable<Track> GetAll()
+    public async Task<IEnumerable<Track>> GetAll()
     {
-        var tracks = trackRepository.GetAll();
+        var tracks = await trackRepository.GetAll();
         return tracks;
     }
 
-    public Track? GetById(int id)
+    public async Task<Track?> GetById(int id)
     {
-        return trackRepository.GetById(id);
+        return await trackRepository.GetById(id);
     }
 
-    public Track? Post(TrackDto entity)
+    public async Task<Track?> Post(TrackDto entity)
     {
         var track = mapper.Map<Track>(entity);
-        track.Id = _id++;
-        return trackRepository.Post(track);
+        return await trackRepository.Post(track);
     }
 
-    public bool Put(int id, TrackDto entity)
+    public async Task<bool> Put(int id, TrackDto entity)
     {
         var track = mapper.Map<Track>(entity);
-        return trackRepository.Put(id, track);
+        return await trackRepository.Put(id, track);
     }
 }

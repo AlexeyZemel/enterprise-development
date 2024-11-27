@@ -18,9 +18,9 @@ public class ActorController(IService<ActorDto, Actor> actorService) : Controlle
     /// </summary>
     /// <returns>Список исполнителей</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Actor>> Get()
+    public async Task<ActionResult<IEnumerable<Actor>>> Get()
     {
-        return Ok(actorService.GetAll());
+        return Ok(await actorService.GetAll());
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class ActorController(IService<ActorDto, Actor> actorService) : Controlle
     /// <param name="id">Идентификатор исполнителя</param>
     /// <returns>Исполнитель или "Не найдено"</returns>
     [HttpGet("{id}")]
-    public ActionResult<Actor> Get(int id)
+    public async Task<ActionResult<Actor>> Get(int id)
     {
-        var result = actorService.GetById(id);
+        var result = await actorService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -44,9 +44,9 @@ public class ActorController(IService<ActorDto, Actor> actorService) : Controlle
     /// <param name="value">Информация о новом исполнителе</param>
     /// <returns>Добавленный исполнитель или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Actor> Post([FromBody] ActorDto value)
+    public async Task<ActionResult<Actor>> Post([FromBody] ActorDto value)
     {
-        var result = actorService.Post(value);
+        var result = await actorService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -60,9 +60,9 @@ public class ActorController(IService<ActorDto, Actor> actorService) : Controlle
     /// <param name="value">Обновлённая информация о исполнителе</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] ActorDto value)
+    public async Task<ActionResult> Put(int id, [FromBody] ActorDto value)
     {
-        var result = actorService.Put(id, value);
+        var result = await actorService.Put(id, value);
         if (!result)
             return BadRequest();
 
@@ -75,9 +75,9 @@ public class ActorController(IService<ActorDto, Actor> actorService) : Controlle
     /// <param name="id">Идентификатор исполнителя</param>
     /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var result = actorService.Delete(id);
+        var result = await actorService.Delete(id);
         if (!result)
             return NotFound();
 

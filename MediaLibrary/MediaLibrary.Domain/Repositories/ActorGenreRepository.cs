@@ -1,55 +1,59 @@
 ﻿using MediaLibrary.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class ActorGenreRepository(IRepository<Genre> genreRepository, 
+public class ActorGenreRepository(MediaLibraryContext context, IRepository<Genre> genreRepository, 
     IRepository<Actor> actorRepository) : IRepository<ActorGenre>
 {
-    private readonly List<ActorGenre> _actorGenres = [];
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var value = GetById(id);
+        var value = await GetById(id);
 
         if (value == null)
             return false;
 
-        _actorGenres.Remove(value);
+        context.ActorGenres.Remove(value);
+        await context.SaveChangesAsync();
         return true;
     }
 
-    public IEnumerable<ActorGenre> GetAll() => _actorGenres;
+    public async Task<IEnumerable<ActorGenre>> GetAll() => await context.ActorGenres.ToListAsync();
 
-    public ActorGenre? GetById(int id) => _actorGenres.Find(ag => ag.ActorId == id);
+    public async Task<ActorGenre?> GetById(int id) => await context.ActorGenres.FirstOrDefaultAsync(ag => ag.ActorId == id);
 
-    public ActorGenre? Post(ActorGenre entity)
+    public async Task<ActorGenre?> Post(ActorGenre entity)
     {
-        var genre = genreRepository.GetById(entity.GenreId);
+        var genre = await genreRepository.GetById(entity.GenreId);
         if (genre == null)
             return null;
 
-        var actor = actorRepository.GetById(entity.ActorId);
+        var actor = await actorRepository.GetById(entity.ActorId);
         if (actor == null)
             return null;
 
-        _actorGenres.Add(entity);
+        context.ActorGenres.Add(entity);
+        await context.SaveChangesAsync();
         return entity;
     }
 
-    public bool Put(int id, ActorGenre entity)
+    public async Task<bool> Put(int id, ActorGenre entity)
     {
-        var oldValue = GetById(id);
+        var oldValue = await GetById(id);
         if (oldValue == null)
             return false;
 
-        var actor = actorRepository.GetById(entity.ActorId);
+        var actor = await actorRepository.GetById(entity.ActorId);
         if (actor == null)
             return false;
 
-        var genre = genreRepository.GetById(entity.GenreId);
+        var genre = await genreRepository.GetById(entity.GenreId);
         if (genre == null)
             return false;
 
         oldValue.GenreId = entity.GenreId;
+
+        await context.SaveChangesAsync();
         return true;
     }
 }

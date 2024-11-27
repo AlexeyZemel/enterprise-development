@@ -1,8 +1,10 @@
 using MediaLibrary.API;
 using MediaLibrary.API.Dto;
 using MediaLibrary.API.Services;
+using MediaLibrary.Domain;
 using MediaLibrary.Domain.Entities;
 using MediaLibrary.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,19 +16,22 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddSingleton<IService<ActorDto, Actor>,ActorService>();
-builder.Services.AddSingleton<IService<AlbumDto, Album>, AlbumService>();
-builder.Services.AddSingleton<IService<GenreDto, Genre>, GenreService>();
-builder.Services.AddSingleton<IService<TrackDto, Track>, TrackService>();
-builder.Services.AddSingleton<QueryService>();
-builder.Services.AddSingleton<IService<ActorGenreDto, ActorGenre>, ActorGenreService>();
-builder.Services.AddSingleton<IRepository<Actor>, ActorRepository>();
-builder.Services.AddSingleton<IRepository<Album>, AlbumRepository>();
-builder.Services.AddSingleton<IRepository<Track>, TrackRepository>();
-builder.Services.AddSingleton<IRepository<Genre>, GenreRepository>();
-builder.Services.AddSingleton<IRepository<ActorGenre>, ActorGenreRepository>();
+builder.Services.AddScoped<IService<ActorDto, Actor>,ActorService>();
+builder.Services.AddScoped<IService<AlbumDto, Album>, AlbumService>();
+builder.Services.AddScoped<IService<GenreDto, Genre>, GenreService>();
+builder.Services.AddScoped<IService<TrackDto, Track>, TrackService>();
+builder.Services.AddScoped<QueryService>();
+builder.Services.AddScoped<IService<ActorGenreDto, ActorGenre>, ActorGenreService>();
+builder.Services.AddScoped<IRepository<Actor>, ActorRepository>();
+builder.Services.AddScoped<IRepository<Album>, AlbumRepository>();
+builder.Services.AddScoped<IRepository<Track>, TrackRepository>();
+builder.Services.AddScoped<IRepository<Genre>, GenreRepository>();
+builder.Services.AddScoped<IRepository<ActorGenre>, ActorGenreRepository>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<MediaLibraryContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgre")));
 
 builder.Services.AddAutoMapper(typeof(Mapping));
 

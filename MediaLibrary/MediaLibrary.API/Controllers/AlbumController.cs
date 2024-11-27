@@ -18,9 +18,9 @@ public class AlbumController(IService<AlbumDto, Album> albumService) : Controlle
     /// </summary>
     /// <returns>Список альбомов</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Album>> Get()
+    public async Task<ActionResult<IEnumerable<Album>>> Get()
     {
-        return Ok(albumService.GetAll());
+        return Ok(await albumService.GetAll());
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class AlbumController(IService<AlbumDto, Album> albumService) : Controlle
     /// <param name="id">Идентификатор альбом</param>
     /// <returns>Альбом или "Не найдено"</returns>
     [HttpGet("{id}")]
-    public ActionResult<Album> Get(int id)
+    public async Task<ActionResult<Album>> Get(int id)
     {
-        var result = albumService.GetById(id);
+        var result = await albumService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -44,9 +44,9 @@ public class AlbumController(IService<AlbumDto, Album> albumService) : Controlle
     /// <param name="value">Информация о новом альбоме</param>
     /// <returns>Добавленный альбом или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Album> Post([FromBody] AlbumDto value)
+    public async Task<ActionResult<Album>> Post([FromBody] AlbumDto value)
     {
-        var result = albumService.Post(value);
+        var result = await albumService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -60,9 +60,9 @@ public class AlbumController(IService<AlbumDto, Album> albumService) : Controlle
     /// <param name="value">Обновлённая информация об альбоме</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] AlbumDto value)
+    public async Task<ActionResult> Put(int id, [FromBody] AlbumDto value)
     {
-        var result = albumService.Put(id, value);
+        var result = await albumService.Put(id, value);
         if (!result)
             return BadRequest();
 
@@ -75,9 +75,9 @@ public class AlbumController(IService<AlbumDto, Album> albumService) : Controlle
     /// <param name="id">Идентификатор альбома</param>
     /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var result = albumService.Delete(id);
+        var result = await albumService.Delete(id);
         if (!result)
             return BadRequest();
 

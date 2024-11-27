@@ -1,43 +1,44 @@
 ﻿using MediaLibrary.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class TrackRepository(IRepository<Album> albumRepository) : IRepository<Track>
+public class TrackRepository(MediaLibraryContext context, IRepository<Album> albumRepository) : IRepository<Track>
 {
-    private readonly List<Track> _tracks = [];
-
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var value = GetById(id);
+        var value = await GetById(id);
 
         if (value == null)
             return false;
 
-        _tracks.Remove(value);
+        context.Tracks.Remove(value);
+        await context.SaveChangesAsync();
         return true;
     }
 
-    public IEnumerable<Track> GetAll() => _tracks;
+    public async Task<IEnumerable<Track>> GetAll() => await context.Tracks.ToListAsync();
 
-    public Track? GetById(int id) => _tracks.Find(t => t.Id == id);
+    public async Task<Track?> GetById(int id) => await context.Tracks.FirstOrDefaultAsync(t => t.Id == id);
 
-    public Track? Post(Track entity)
+    public async Task<Track?> Post(Track entity)
     {
-        var album = albumRepository.GetById(entity.AlbumId);
+        var album = await albumRepository.GetById(entity.AlbumId);
         if (album == null)
             return null;
 
-        _tracks.Add(entity);
+        context.Tracks.Add(entity);
+        await context.SaveChangesAsync();
         return entity;
     }
 
-    public bool Put(int id, Track entity)
+    public async Task<bool> Put(int id, Track entity)
     {
-        var oldValue = GetById(id);
+        var oldValue = await GetById(id);
         if (oldValue == null)
             return false;
 
-        var album = albumRepository.GetById(entity.AlbumId);
+        var album = await albumRepository.GetById(entity.AlbumId);
         if (album == null)
             return false;
 
@@ -45,6 +46,8 @@ public class TrackRepository(IRepository<Album> albumRepository) : IRepository<T
         oldValue.Number = entity.Number;
         oldValue.AlbumId = entity.AlbumId;
         oldValue.Time = entity.Time;
+
+        await context.SaveChangesAsync();
         return true;
     }
 }

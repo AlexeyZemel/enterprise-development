@@ -7,26 +7,24 @@ namespace MediaLibrary.API.Services;
 
 public class ActorGenreService(IRepository<ActorGenre> actorGenreRepository, IMapper mapper) : IService<ActorGenreDto, ActorGenre>
 {
-    private int _id = 1;
-    public bool Delete(int id) => actorGenreRepository.Delete(id);
+    public async Task<bool> Delete(int id) => await actorGenreRepository.Delete(id);
 
-    public IEnumerable<ActorGenre> GetAll() => actorGenreRepository.GetAll();
+    public async Task<IEnumerable<ActorGenre>> GetAll() => await actorGenreRepository.GetAll();
 
-    public ActorGenre? GetById(int id)
+    public async Task<ActorGenre?> GetById(int id)
     {
-        return actorGenreRepository.GetById(id);
+        return await actorGenreRepository.GetById(id);
     }
  
-    public ActorGenre? Post(ActorGenreDto entity)
+    public async Task<ActorGenre?> Post(ActorGenreDto entity)
     {
         var value = mapper.Map<ActorGenre>(entity);
-        value.Id = _id++;
-        return actorGenreRepository.Post(value);
+        return await actorGenreRepository.Post(value);
     }
 
-    public bool Put(int id, ActorGenreDto entity)
+    public async Task<bool> Put(int id, ActorGenreDto entity)
     {
         var value = mapper.Map<ActorGenre>(entity);
-        return actorGenreRepository.Put(id, value);
+        return await actorGenreRepository.Put(id, value);
     }
 }

@@ -7,33 +7,31 @@ namespace MediaLibrary.API.Services;
 
 public class AlbumService(IRepository<Album> albumRepository, IMapper mapper) : IService<AlbumDto, Album>
 {
-    private int _id = 1;
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return albumRepository.Delete(id);
+        return await albumRepository.Delete(id);
     }
 
-    public IEnumerable<Album> GetAll()
+    public async Task<IEnumerable<Album>> GetAll()
     {
-        var albums = albumRepository.GetAll();
+        var albums = await albumRepository.GetAll();
         return albums;
     }
 
-    public Album? GetById(int id)
+    public async Task<Album?> GetById(int id)
     {
-        return albumRepository.GetById(id);
+        return await albumRepository.GetById(id);
     }
 
-    public Album? Post(AlbumDto entity)
+    public async Task<Album?> Post(AlbumDto entity)
     {
-        var album = mapper.Map<Album>(entity);
-        album.Id = _id++;
-        return albumRepository.Post(album);
+        var album = mapper.Map<Album>(entity);       
+        return await albumRepository.Post(album);
     }
 
-    public bool Put(int id, AlbumDto entity)
+    public async Task<bool> Put(int id, AlbumDto entity)
     {
         var album = mapper.Map<Album>(entity);
-        return albumRepository.Put(id, album);
+        return await albumRepository.Put(id, album);
     }
 }

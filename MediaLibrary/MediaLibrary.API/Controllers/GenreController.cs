@@ -18,9 +18,9 @@ public class GenreController(IService<GenreDto, Genre> genreService) : Controlle
     /// </summary>
     /// <returns>Список жанров</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Genre>> Get()
+    public async Task<ActionResult<IEnumerable<Genre>>> Get()
     {
-        return Ok(genreService.GetAll());
+        return Ok(await genreService.GetAll());
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class GenreController(IService<GenreDto, Genre> genreService) : Controlle
     /// <param name="id">Идентификатор жанра</param>
     /// <returns>Жанр или "Не найдено"</returns>
     [HttpGet("{id}")]
-    public ActionResult<Genre> Get(int id)
+    public async Task<ActionResult<Genre>> Get(int id)
     {
-        var result = genreService.GetById(id);
+        var result = await genreService.GetById(id);
         if (result == null) 
             return NotFound();
 
@@ -44,9 +44,9 @@ public class GenreController(IService<GenreDto, Genre> genreService) : Controlle
     /// <param name="value">Информация о новом жанре</param>
     /// <returns>Добавленный жанр или "Плохой запрос"</returns>
     [HttpPost]
-    public ActionResult<Genre> Post([FromBody] GenreDto value)
+    public async Task<ActionResult<Genre>> Post([FromBody] GenreDto value)
     {
-        var result = genreService.Post(value);
+        var result = await genreService.Post(value);
         if (result == null)
             return BadRequest();
 
@@ -60,9 +60,9 @@ public class GenreController(IService<GenreDto, Genre> genreService) : Controlle
     /// <param name="value">Обновлённая информация о жанре</param>
     /// <returns>Результат операции</returns>
     [HttpPut("{id}")]
-    public ActionResult Put(int id, [FromBody] GenreDto value)
+    public async Task<ActionResult> Put(int id, [FromBody] GenreDto value)
     {
-        var result = genreService.Put(id, value);
+        var result = await genreService.Put(id, value);
         if (!result) 
             return BadRequest();
 
@@ -75,9 +75,9 @@ public class GenreController(IService<GenreDto, Genre> genreService) : Controlle
     /// <param name="id">Идентификатор жанра</param>
     /// <returns>Результат операции</returns>
     [HttpDelete("{id}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var result = genreService.Delete(id);
+        var result = await genreService.Delete(id);
         if (!result)
             return NotFound();
 

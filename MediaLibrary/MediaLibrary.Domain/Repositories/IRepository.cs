@@ -10,21 +10,21 @@ public interface IRepository<T>
     /// Получить все сущности
     /// </summary>
     /// <returns>Список сущностей</returns>
-    public IEnumerable<T> GetAll();
+    public Task<IEnumerable<T>> GetAll();
 
     /// <summary>
     /// Получить сущность по идентификатору 
     /// </summary>
     /// <param name="id">Идентификатор сущности</param>
     /// <returns>Сущность с заданным идентификатором</returns>
-    public T? GetById(int id);
+    public Task<T?> GetById(int id);
 
     /// <summary>
     /// Добавить новую сущность
     /// </summary>
     /// <param name="entity">Новая сущность</param>
     /// <returns>Добавленная сущность</returns>
-    public T? Post(T entity);
+    public Task<T?> Post(T entity);
 
     /// <summary>
     /// Обновить сущность по идентификатору 
@@ -32,12 +32,12 @@ public interface IRepository<T>
     /// <param name="id">Идентификатор сущности</param>
     /// <param name="entity">Новая сущность</param>
     /// <returns>Результат операции</returns>
-    public bool Put(int id, T entity);
+    public Task<bool> Put(int id, T entity);
 
     /// <summary>
     /// Удалить сущность по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор сущности</param>
     /// <returns>Результат операции</returns>
-    public bool Delete(int id);
+    public Task<bool> Delete(int id);
 }

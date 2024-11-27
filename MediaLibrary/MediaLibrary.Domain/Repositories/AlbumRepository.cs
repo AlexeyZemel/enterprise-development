@@ -1,49 +1,52 @@
 ﻿using MediaLibrary.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaLibrary.Domain.Repositories;
 
-public class AlbumRepository(IRepository<Actor> actorRepository) : IRepository<Album>
+public class AlbumRepository(MediaLibraryContext context, IRepository<Actor> actorRepository) : IRepository<Album>
 {
-    private readonly List<Album> _albums = [];
-    
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var value = GetById(id);
+        var value = await GetById(id);
 
         if (value == null)
             return false;
 
-        _albums.Remove(value);
+        context.Albums.Remove(value);
+        await context.SaveChangesAsync();
         return true;
     }
 
-    public IEnumerable<Album> GetAll() => _albums;
+    public async Task<IEnumerable<Album>> GetAll() => await context.Albums.ToListAsync();
 
-    public Album? GetById(int id) => _albums.Find(a => a.Id == id);
+    public async Task<Album?> GetById(int id) => await context.Albums.FirstOrDefaultAsync(a => a.Id == id);
 
-    public Album? Post(Album entity)
+    public async Task<Album?> Post(Album entity)
     {
-        var actor = actorRepository.GetById(entity.ActorId);
+        var actor = await actorRepository.GetById(entity.ActorId);
         if (actor == null)
             return null;
 
-        _albums.Add(entity);
+        context.Albums.Add(entity);
+        await context.SaveChangesAsync();
         return entity;
     }
 
-    public bool Put(int id, Album entity)
+    public async Task<bool> Put(int id, Album entity)
     {
-        var oldValue = GetById(id);
+        var oldValue = await GetById(id);
         if (oldValue == null)
             return false;
 
-        var actor = actorRepository.GetById(entity.ActorId);
+        var actor = await actorRepository.GetById(entity.ActorId);
         if (actor == null)
             return false;
 
         oldValue.ActorId = entity.ActorId;
         oldValue.Name = entity.Name;
         oldValue.Date = entity.Date;
+
+        await context.SaveChangesAsync();
         return true;
     }
 }
