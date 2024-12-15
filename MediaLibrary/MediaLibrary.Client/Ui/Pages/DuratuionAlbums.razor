@@ -1,0 +1,27 @@
+﻿@page "/album-durations"
+@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <h4>Продолжительность альбомов</h4>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="TimeAlbumDto" Data="new[] { AlbumDurations }" Responsive Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="TimeAlbumDto" Field="@nameof(TimeAlbumDto.MinTime)" Caption="Минимальная продолжительность (в секундах)" />
+                <DataGridColumn TItem="TimeAlbumDto" Field="@nameof(TimeAlbumDto.AvgTime)" Caption="Средняя продолжительность (в секундах)" />
+                <DataGridColumn TItem="TimeAlbumDto" Field="@nameof(TimeAlbumDto.MaxTime)" Caption="Максимальная продолжительность (в секундах)" />
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private TimeAlbumDto AlbumDurations { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AlbumDurations = await MediaLibraryApi.GetTimeAlbumsInfo();
+        await base.OnInitializedAsync();
+    }
+}

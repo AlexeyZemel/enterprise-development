@@ -1,0 +1,94 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="AlbumModal">
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Не удалось создать альбом. Проверьте данные и попробуйте снова.</AlertMessage>
+    </Alert>
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новый альбом</ModalTitle>
+                <CloseButton Clicked="CloseAlbumModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Исполнитель</FieldLabel>
+                    <Select TValue="int" @bind-SelectedValue="NewAlbum.ActorId">
+                        @if (Actors != null)
+                        {
+                            @foreach (var actor in Actors)
+                            {
+                                <SelectItem Value="@actor.Id">@($"{actor.Id} | {actor.Name}")</SelectItem>
+                            }
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Название альбома</FieldLabel>
+                    <TextEdit @bind-Text="NewAlbum.Name" />
+                </Field>
+                <Field>
+                    <FieldLabel>Дата релиза</FieldLabel>
+                    <InputDate @bind-Value="NewAlbum.Date" />
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseAlbumModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateAlbumAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnAlbumAdded { get; set; }
+
+    private Modal AlbumModal { get; set; } = new();
+    private AlbumDto NewAlbum { get; set; } = new();
+    private IEnumerable<Actor>? Actors { get; set; }
+    private bool IsAlertVisible { get; set; } = false;
+
+    public async Task Show()
+    {
+        await LoadActorsAsync();
+        NewAlbum.Date = DateTime.Now;
+        await AlbumModal.Show();
+    }
+
+    private async Task CloseAlbumModalAsync()
+    {
+        IsAlertVisible = false;
+        NewAlbum = new();
+        await AlbumModal.Hide();
+    }
+
+    private async Task CreateAlbumAsync()
+    {
+        try
+        {
+            await MediaLibraryApi.CreateAlbum(NewAlbum);
+            await CloseAlbumModalAsync();
+            await OnAlbumAdded.InvokeAsync();
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+
+    private async Task LoadActorsAsync()
+    {
+        Actors = await MediaLibraryApi.GetAllActor();
+        if (Actors.FirstOrDefault() is null)
+        {
+            NewAlbum.ActorId = 0;
+        }
+        else
+        {
+            NewAlbum.ActorId = Actors.FirstOrDefault()!.Id;
+        }
+    }
+}

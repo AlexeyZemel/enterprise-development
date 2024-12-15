@@ -1,0 +1,108 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="ActorGenreModal">
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Не удалось создать связь. Проверьте данные и попробуйте снова.</AlertMessage>
+    </Alert>
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новая связь Актер-Жанр</ModalTitle>
+                <CloseButton Clicked="CloseActorGenreModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Исполнитель</FieldLabel>
+                    <Select TValue="int" @bind-SelectedValue="NewActorGenre.ActorId">
+                        @if (Actors != null)
+                        {
+                            @foreach (var actor in Actors)
+                            {
+                                <SelectItem Value="@actor.Id">@actor.Name</SelectItem>
+                            }
+                        }
+                    </Select>
+                </Field>
+
+                <Field>
+                    <FieldLabel>Жанр</FieldLabel>
+                    <Select TValue="int" @bind-SelectedValue="NewActorGenre.GenreId">
+                        @if (Genres != null)
+                        {
+                            @foreach (var genre in Genres)
+                            {
+                                <SelectItem Value="@genre.Id">@genre.Name</SelectItem>
+                            }
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseActorGenreModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateActorGenreAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnActorGenreAdded { get; set; }
+
+    private Modal ActorGenreModal { get; set; } = new();
+    private ActorGenreDto NewActorGenre { get; set; } = new();
+    private IEnumerable<Actor>? Actors { get; set; }
+    private IEnumerable<Genre>? Genres { get; set; }
+    private bool IsAlertVisible { get; set; } = false;
+
+    public async Task Show()
+    {
+        await LoadActorsAndGenresAsync();
+        await ActorGenreModal.Show();
+    }
+
+    private async Task CloseActorGenreModalAsync()
+    {
+        IsAlertVisible = false;
+        NewActorGenre = new();
+        await ActorGenreModal.Hide();
+    }
+
+    private async Task CreateActorGenreAsync()
+    {
+        try
+        {
+            await MediaLibraryApi.CreateActorGenre(NewActorGenre);
+            await CloseActorGenreModalAsync();
+            await OnActorGenreAdded.InvokeAsync();
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+
+    private async Task LoadActorsAndGenresAsync()
+    {
+        Actors = await MediaLibraryApi.GetAllActor(); 
+        if (Actors?.FirstOrDefault() is null)
+        {
+            NewActorGenre.ActorId = 0;
+        }
+        else
+        {
+            NewActorGenre.ActorId = Actors.FirstOrDefault()!.Id;
+        }
+        Genres = await MediaLibraryApi.GetAllGenre();
+        if (Genres?.FirstOrDefault() is null)
+        {
+            NewActorGenre.GenreId = 0;
+        }
+        else
+        {
+            NewActorGenre.GenreId = Genres.FirstOrDefault()!.Id;
+        }
+    }
+}

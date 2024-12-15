@@ -1,0 +1,52 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="GenreModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Изменить жанр</ModalTitle>
+                <CloseButton Clicked="CloseGenreModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Название жанра</FieldLabel>
+                    @if (GenreToUpdate != null)
+                    {
+                        <InputText @bind-Value="GenreToUpdate.Name" />
+                    }
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseGenreModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="UpdateGenreAsync">Изменить</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnGenreUpdated { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public GenreDto? GenreToUpdate { get; set; }
+
+    private Modal GenreModal { get; set; } = new();
+
+    public async Task Show() => await GenreModal.Show();
+
+    private async Task CloseGenreModalAsync() => await GenreModal.Hide();
+
+    private async Task UpdateGenreAsync()
+    {
+        if (GenreToUpdate != null)
+        {
+            await MediaLibraryApi.UpdateGenre(Id, GenreToUpdate);
+            await GenreModal.Hide();
+            await OnGenreUpdated.InvokeAsync();
+        }
+    }
+}

@@ -18,5 +18,5 @@ public class AlbumDto
     /// <summary>
     /// Дата релиза
     /// </summary>
-    public required DateTime Date { get; set; }
+    public required DateOnly Date { get; set; }
 }

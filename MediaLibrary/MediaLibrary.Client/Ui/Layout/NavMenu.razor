@@ -1,0 +1,73 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Медиатека</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column g-5">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="actors">
+                <span aria-hidden="true">Артисты</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="albums">
+                <span aria-hidden="true">Альбомы</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tracks">
+                <span aria-hidden="true">Треки</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="genres">
+                <span aria-hidden="true">Жанры</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="actorgenres">
+                <span aria-hidden="true">Артисты и Жанры</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tracks-in-album">
+                <span aria-hidden="true">Треки в альбоме</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="albums-info">
+                <span aria-hidden="true">Информация об альбомах</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="top-albums">
+                <span aria-hidden="true">Топ 5 альбомов</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link h-75" href="albums-actors">
+                <span aria-hidden="true">Авторы с максимальным количеством альбомов</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3 ">
+            <NavLink class="nav-link h-75" href="album-durations">
+                <span aria-hidden="true">Информация о времени альбомов</span>
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

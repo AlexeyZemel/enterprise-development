@@ -1,0 +1,118 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Треки</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Создать
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="Track"
+                  Data="Tracks"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="Track"
+                                Field="@nameof(Track.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteTrackAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="Track"
+                                Field="@nameof(Track.Number)"
+                                Caption="Номер трека">
+                </DataGridColumn>
+                <DataGridColumn TItem="Track"
+                                Field="@nameof(Track.Name)"
+                                Caption="Название трека">
+                </DataGridColumn>
+                <DataGridColumn TItem="Track"
+                                Field="@nameof(Track.Time)"
+                                Caption="Продолжительность">
+                 
+                </DataGridColumn>
+                <DataGridColumn TItem="Track" Caption="Альбом">
+                    <DisplayTemplate>
+                        @GetAlbumName(context.AlbumId)
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<TrackCreateModal @ref="TrackCreateModal" OnTrackAdded="@HandleTrackListChanged" />
+<TrackUpdateModal @ref="TrackUpdateModal" TrackToUpdate="SelectedTrack" Id="SelectedId" OnTrackUpdated="@HandleTrackListChanged" />
+
+@code {
+    private IEnumerable<Track> Tracks { get; set; } = [];
+    private IEnumerable<Album>? Albums { get; set; }
+    private int SelectedId { get; set; }
+    private TrackDto? SelectedTrack { get; set; }
+    private TrackCreateModal TrackCreateModal { get; set; } = new();
+    private TrackUpdateModal TrackUpdateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshTracksCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OpenEditPageAsync(Track context)
+    {
+        SelectedId = context.Id;
+        SelectedTrack = new()
+        {
+            Number = context.Number,
+            Name = context.Name,
+            AlbumId = context.AlbumId,
+            Time = context.Time
+        };
+        await TrackUpdateModal.Show();
+    }
+
+    private async Task DeleteTrackAsync(Track context)
+    {
+        await MediaLibraryApi.DeleteTrack(context.Id);
+        await RefreshTracksCollection();
+    }
+
+    private async Task HandleTrackListChanged()
+    {
+        await RefreshTracksCollection();
+    }
+
+    private async Task OpenCreateModal() => await TrackCreateModal.Show();
+
+    private async Task RefreshTracksCollection()
+    {
+        Tracks = await MediaLibraryApi.GetAllTrack();
+        Albums = await MediaLibraryApi.GetAllAlbum();
+    }
+
+    private string GetAlbumName(int albumId)
+    {
+        return Albums?.FirstOrDefault(a => a.Id == albumId)?.Name ?? "Неизвестный альбом";
+    }
+}

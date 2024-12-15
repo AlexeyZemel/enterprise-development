@@ -1,0 +1,46 @@
+﻿@page "/top-albums"
+@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Топ 5 альбомов по продолжительности треков</h4>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="TopAlbumsDto"
+                  Data="TopAlbums"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="TopAlbumsDto"
+                                Field="@nameof(TopAlbumsDto.Name)"
+                                Caption="Название Альбома">
+                </DataGridColumn>
+                <DataGridColumn TItem="TopAlbumsDto"
+                                Field="@nameof(TopAlbumsDto.TotalTime)"
+                                Caption="Продолжительность (в секундах)">
+                </DataGridColumn>
+                <DataGridColumn TItem="TopAlbumsDto"
+                                Field="@nameof(TopAlbumsDto.Date)"
+                                Caption="Дата релиза">
+                    <DisplayTemplate>
+                        @context.Date.ToString("yyyy-MM-dd")
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private IEnumerable<TopAlbumsDto> TopAlbums { get; set; } = new List<TopAlbumsDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        TopAlbums = await MediaLibraryApi.GetTopAlbums();
+        await base.OnInitializedAsync();
+    }
+}

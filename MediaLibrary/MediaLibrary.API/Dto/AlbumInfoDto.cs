@@ -18,7 +18,7 @@ public class AlbumInfoDto
     /// <summary>
     /// Дата релиза
     /// </summary>
-    public required DateTime Date { get; set; }
+    public required DateOnly Date { get; set; }
 
     /// <summary>
     /// Количество треков в альбоме

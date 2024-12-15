@@ -18,7 +18,7 @@ public class TopAlbumsDto
     /// <summary>
     /// Дата релиза
     /// </summary>
-    public required DateTime Date { get; set; }
+    public required DateOnly Date { get; set; }
 
     /// <summary>
     /// Продолжительность треков в альбоме

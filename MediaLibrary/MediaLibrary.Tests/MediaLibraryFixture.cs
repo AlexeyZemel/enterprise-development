@@ -188,119 +188,119 @@ public class MediaLibraryFixture
             {
                 Id = 1,
                 Name= "Lemonade",
-                Date= new DateTime(2016, 4, 23),
+                Date= new DateOnly(2016, 4, 23),
                 ActorId = 1
             },
             new()
             {
                 Id = 2,
                 Name= "Divide (÷)",
-                Date= new DateTime(2017, 3, 3),
+                Date= new DateOnly(2017, 3, 3),
                 ActorId = 2
             },
             new()
             {
                 Id = 3,
                 Name= "Multiply (×)",
-                Date= new DateTime(2014, 6, 20),
+                Date= new DateOnly(2014, 6, 20),
                 ActorId = 2
             },
             new()
             {
                 Id = 4,
                 Name= "Equals (=)",
-                Date= new DateTime(2021, 10, 29),
+                Date= new DateOnly(2021, 10, 29),
                 ActorId = 2
             },
             new()
             {
                 Id = 5,
                 Name= "Midnights",
-                Date= new DateTime(2022, 10, 21),
+                Date= new DateOnly(2022, 10, 21),
                 ActorId = 3
             },
             new()
             {
                 Id = 6,
                 Name= "After Hours",
-                Date= new DateTime(2020, 3, 20),
+                Date= new DateOnly(2020, 3, 20),
                 ActorId = 4
             },
             new()
             {
                 Id = 7,
                 Name= "Starboy",
-                Date= new DateTime(2016, 11, 25),
+                Date= new DateOnly(2016, 11, 25),
                 ActorId = 4
             },
             new()
             {
                 Id = 8,
                 Name= "Dawn FM",
-                Date= new DateTime(2022, 1, 7),
+                Date= new DateOnly(2022, 1, 7),
                 ActorId = 4
             },
             new()
             {
                 Id = 9,
                 Name= "Happier Than Ever",
-                Date= new DateTime(2021, 7, 30),
+                Date= new DateOnly(2021, 7, 30),
                 ActorId = 5
             },
             new()
             {
                 Id = 10,
                 Name= "Scorpion",
-                Date= new DateTime(2018, 6, 29),
+                Date= new DateOnly(2018, 6, 29),
                 ActorId = 6
             },
             new()
             {
                 Id = 11,
                 Name= "Views",
-                Date= new DateTime(2016, 4, 29),
+                Date= new DateOnly(2016, 4, 29),
                 ActorId = 6
             },
             new()
             {
                 Id = 12,
                 Name= "Nothing Was the Same",
-                Date= new DateTime(2013, 9, 24),
+                Date= new DateOnly(2013, 9, 24),
                 ActorId = 6
             },
             new()
             {
                 Id = 13,
                 Name= "25",
-                Date= new DateTime(2015, 11, 20),
+                Date= new DateOnly(2015, 11, 20),
                 ActorId = 7
             },
             new()
             {
                 Id = 14,
                 Name= "A Head Full of Dreams",
-                Date= new DateTime(2015, 12, 4),
+                Date= new DateOnly(2015, 12, 4),
                 ActorId = 8
             },
             new()
             {
                 Id = 15,
                 Name= "Mylo Xyloto",
-                Date= new DateTime(2011, 10, 24),
+                Date= new DateOnly(2011, 10, 24),
                 ActorId = 8
             },
             new() 
             { 
                 Id = 16, 
                 Name= "Ghost Stories",
-                Date= new DateTime(2014, 5, 16), 
+                Date= new DateOnly(2014, 5, 16), 
                 ActorId = 8 
             },
             new() 
             { 
                 Id = 17, 
                 Name= "Future Nostalgia",
-                Date= new DateTime(2020, 3, 27), 
+                Date= new DateOnly(2020, 3, 27), 
                 ActorId = 9 
             }
         ];

@@ -1,0 +1,52 @@
+﻿@page "/tracks-in-album"
+@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Вы не ввели название альбома или альбом не найден!</AlertMessage>
+    </Alert>
+    <CardHeader>
+        <h4>Треки в альбоме</h4>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="Track" Data="Tracks" Responsive Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="Track" Field="@nameof(Track.Number)" Caption="Номер трека" />
+                <DataGridColumn TItem="Track" Field="@nameof(Track.Name)" Caption="Название трека" />
+                <DataGridColumn TItem="Track" Field="@nameof(Track.Time)" Caption="Продолжительность" />
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<Div>
+    <label>Идентификатор альбома:</label>
+    <InputNumber @bind-Value="AlbumId" />
+
+    <Button Color="Color.Primary" Clicked="RefreshTracksCollection">Поиск</Button>
+</Div>
+
+@code {
+    private IEnumerable<Track> Tracks { get; set; } = new List<Track>();
+    private int AlbumId { get; set; } = 0;  
+    private bool IsAlertVisible { get; set; } = false;
+
+    private async Task RefreshTracksCollection()
+    {
+        try
+        {
+            if (AlbumId <= 0)
+            {
+                IsAlertVisible = true;
+                return;
+            }
+
+            Tracks = await MediaLibraryApi.GetTracksInAlbum(AlbumId);
+            IsAlertVisible = false;
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+}

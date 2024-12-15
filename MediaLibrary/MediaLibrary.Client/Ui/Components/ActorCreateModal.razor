@@ -1,0 +1,54 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="ActorModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новый исполнитель</ModalTitle>
+                <CloseButton Clicked="CloseActorModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Имя исполнителя</FieldLabel>
+                    <InputText @bind-Value="NewActor.Name" />
+                </Field>
+                <Field>
+                    <FieldLabel>Описание исполнителя</FieldLabel>
+                    <InputTextArea @bind-Value="NewActor.Description" />
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseActorModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateActorAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnActorAdded { get; set; }
+
+    private Modal ActorModal { get; set; } = new();
+    private ActorDto NewActor { get; set; } = new();
+
+    public async Task Show() => await ActorModal.Show();
+
+    private async Task CloseActorModalAsync()
+    {
+
+        NewActor = new ActorDto();
+        await ActorModal.Hide();
+    }
+
+    private async Task CreateActorAsync()
+    {
+        await MediaLibraryApi.CreateActor(NewActor);
+        NewActor = new ActorDto();
+        await ActorModal.Hide();
+        await OnActorAdded.InvokeAsync();
+       
+    }
+}

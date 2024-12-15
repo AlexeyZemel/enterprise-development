@@ -1,0 +1,57 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="ActorModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Изменить исполнителя</ModalTitle>
+                <CloseButton Clicked="CloseActorModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Имя исполнителя</FieldLabel>
+                    @if (ActorToUpdate != null)
+                    {
+                        <InputText @bind-Value="ActorToUpdate.Name" />
+                    }
+                </Field>
+                <Field>
+                    <FieldLabel>Описание исполнителя</FieldLabel>
+                    @if (ActorToUpdate != null)
+                    {
+                        <InputTextArea @bind-Value="ActorToUpdate.Description" />
+                    }
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseActorModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="UpdateActorAsync">Изменить</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnActorUpdated { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public ActorDto? ActorToUpdate { get; set; }
+
+    private Modal ActorModal { get; set; } = new();
+
+    public async Task Show() => await ActorModal.Show();
+
+    private async Task CloseActorModalAsync() => await ActorModal.Hide();
+
+    private async Task UpdateActorAsync()
+    {
+
+        await MediaLibraryApi.UpdateActor(Id, ActorToUpdate!);
+        await ActorModal.Hide();
+        await OnActorUpdated.InvokeAsync();
+    }
+}

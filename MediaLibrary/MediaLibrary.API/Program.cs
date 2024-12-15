@@ -28,6 +28,14 @@ builder.Services.AddScoped<IRepository<Track>, TrackRepository>();
 builder.Services.AddScoped<IRepository<Genre>, GenreRepository>();
 builder.Services.AddScoped<IRepository<ActorGenre>, ActorGenreRepository>();
 
+builder.Services.AddCors(options => 
+                options.AddDefaultPolicy(policy => 
+                { 
+                    policy.AllowAnyOrigin(); 
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader(); 
+                }));
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MediaLibraryContext>(options => 
@@ -42,8 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+app.UseCors();
 
 app.MapControllers();
 

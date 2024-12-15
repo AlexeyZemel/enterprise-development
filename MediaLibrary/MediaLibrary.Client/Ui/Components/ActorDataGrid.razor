@@ -1,0 +1,97 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Исполнители</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Создать
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="Actor"
+                  Data="Actors"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="Actor"
+                                Field="@nameof(Actor.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteActorAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="Actor"
+                                Field="@nameof(Actor.Name)"
+                                Caption="Имя исполнителя">
+                </DataGridColumn>
+                <DataGridColumn TItem="Actor"
+                                Field="@nameof(Actor.Description)"
+                                Caption="Описание исполнителя">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<ActorCreateModal @ref="ActorCreateModal" OnActorAdded="@HandleActorListChanged" />
+<ActorUpdateModal @ref="ActorUpdateModal" ActorToUpdate="SelectedActor" Id="SelectedId" OnActorUpdated="@HandleActorListChanged" />
+
+@code {
+    private IEnumerable<Actor> Actors { get; set; } = [];
+    private int SelectedId { get; set; }
+    private ActorDto? SelectedActor { get; set; }
+    private ActorCreateModal ActorCreateModal { get; set; } = new();
+    private ActorUpdateModal ActorUpdateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshActorsCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OpenEditPageAsync(Actor context)
+    {
+        SelectedId = context.Id;
+        SelectedActor = new()
+        {
+            Name = context.Name,
+            Description = context.Description
+        };
+        await ActorUpdateModal.Show();
+    }
+
+    private async Task DeleteActorAsync(Actor context)
+    {
+        await MediaLibraryApi.DeleteActor(context.Id);
+        await RefreshActorsCollection();
+    }
+
+    private async Task HandleActorListChanged()
+    {
+        await RefreshActorsCollection();
+    }
+
+    private async Task OpenCreateModal() => await ActorCreateModal.Show();
+
+    private async Task RefreshActorsCollection() => Actors = await MediaLibraryApi.GetAllActor();
+}
+ 

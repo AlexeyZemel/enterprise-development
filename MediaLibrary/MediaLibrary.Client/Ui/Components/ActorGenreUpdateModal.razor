@@ -1,0 +1,118 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="ActorGenreModal">
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Список актеров или жанров пуст!</AlertMessage>
+    </Alert>
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Изменить связь Актер-Жанр</ModalTitle>
+                <CloseButton Clicked="CloseActorGenreModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                @if (ActorGenreToUpdate != null)
+                {
+                    <Field>
+                        <FieldLabel>Выберите актера</FieldLabel>
+                        <Select TValue="int" @bind-SelectedValue="ActorGenreToUpdate!.ActorId">
+                            @if (Actors != null)
+                            {
+                                @foreach (var actor in Actors)
+                                {
+                                    <SelectItem Value="@actor.Id">@actor.Name</SelectItem>
+                                }
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>Выберите жанр</FieldLabel>
+                        <Select TValue="int" @bind-SelectedValue="ActorGenreToUpdate!.GenreId">
+                            @if (Genres != null)
+                            {
+                                @foreach (var genre in Genres)
+                                {
+                                    <SelectItem Value="@genre.Id">@genre.Name</SelectItem>
+                                }
+                            }
+                        </Select>
+                    </Field>
+                }
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseActorGenreModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="UpdateActorGenreAsync">Изменить</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnActorGenreUpdated { get; set; }
+    [Parameter]
+    public int AgId { get; set; }
+    [Parameter]
+    public ActorGenreDto? ActorGenreToUpdate { get; set; }
+
+    private IEnumerable<Actor>? Actors { get; set; }
+    private IEnumerable<Genre>? Genres { get; set; }
+    private Modal ActorGenreModal { get; set; } = new();
+    private bool IsAlertVisible { get; set; } = false;
+
+    public async Task Show()
+    {
+        await LoadActorsAsync();
+        await LoadGenresAsync();
+        await ActorGenreModal.Show();
+    }
+
+    private async Task CloseActorGenreModalAsync()
+    {
+        IsAlertVisible = false;
+        ActorGenreToUpdate = new();
+        await ActorGenreModal.Hide();
+    }
+
+    private async Task UpdateActorGenreAsync()
+    {
+        try
+        {
+            await MediaLibraryApi.UpdateActorGenre(AgId, ActorGenreToUpdate!);
+            await CloseActorGenreModalAsync();
+            await OnActorGenreUpdated.InvokeAsync();
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+
+    private async Task LoadActorsAsync()
+    {
+        Actors = await MediaLibraryApi.GetAllActor();
+        if (Actors?.FirstOrDefault() is null)
+        {
+            ActorGenreToUpdate!.ActorId = 0;
+        }
+        else
+        {
+            ActorGenreToUpdate!.ActorId = Actors.FirstOrDefault()!.Id;
+        }
+    }
+
+    private async Task LoadGenresAsync()
+    {
+        Genres = await MediaLibraryApi.GetAllGenre();
+        if (Genres?.FirstOrDefault() is null)
+        {
+            ActorGenreToUpdate!.GenreId = 0;
+        }
+        else
+        {
+            ActorGenreToUpdate!.GenreId = Genres.FirstOrDefault()!.Id;
+        }
+    }
+}

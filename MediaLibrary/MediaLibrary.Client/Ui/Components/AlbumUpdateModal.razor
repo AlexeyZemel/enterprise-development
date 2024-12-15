@@ -1,0 +1,99 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="AlbumModal">
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Список исполнителей пуст или ошибка при обновлении альбома!</AlertMessage>
+    </Alert>
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Изменить альбом</ModalTitle>
+                <CloseButton Clicked="CloseAlbumModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                @if (AlbumToUpdate != null)
+                {
+                    <Field>
+                        <FieldLabel>Выберите исполнителя</FieldLabel>
+                        <Select TValue="int" @bind-SelectedValue="AlbumToUpdate!.ActorId">
+                            @if (Actors != null)
+                            {
+                                @foreach (var actor in Actors)
+                                {
+                                    <SelectItem Value="@actor.Id">@($"{actor.Id} | {actor.Name}")</SelectItem>
+                                }
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>Название альбома</FieldLabel>
+                        <TextEdit @bind-Text="AlbumToUpdate.Name" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>Дата релиза</FieldLabel>
+                        <InputDate TValue="DateTimeOffset" @bind-Value="AlbumToUpdate.Date" />
+                    </Field>
+                }
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseAlbumModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="UpdateAlbumAsync">Изменить</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnAlbumUpdated { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public AlbumDto? AlbumToUpdate { get; set; }
+    private IEnumerable<Actor>? Actors { get; set; }
+    private Modal AlbumModal { get; set; } = new();
+    private bool IsAlertVisible { get; set; } = false;
+
+    public async Task Show()
+    {
+        await LoadActorsAsync();
+        AlbumToUpdate!.Date = DateTime.Now;
+        await AlbumModal.Show();
+    }
+
+    private async Task CloseAlbumModalAsync()
+    {
+        IsAlertVisible = false;
+        AlbumToUpdate = new();
+        await AlbumModal.Hide();
+    }
+
+    private async Task LoadActorsAsync()
+    {
+        Actors = await MediaLibraryApi.GetAllActor();
+        if (Actors.FirstOrDefault() is null)
+        {
+            AlbumToUpdate!.ActorId = 0;
+        }
+        else
+        {
+            AlbumToUpdate!.ActorId = Actors.FirstOrDefault()!.Id;
+        }
+    }
+
+    private async Task UpdateAlbumAsync()
+    {
+        try
+        {
+            await MediaLibraryApi.UpdateAlbum(Id, AlbumToUpdate!);
+            await CloseAlbumModalAsync();
+            await OnAlbumUpdated.InvokeAsync();
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+}

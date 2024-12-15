@@ -1,0 +1,43 @@
+﻿@page "/albums-actors"
+@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Исполнители и количество их альбомов</h4>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="AlbumsActorsDto"
+                  Data="AlbumsActors"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="AlbumsActorsDto"
+                                Field="@nameof(AlbumsActorsDto.Name)"
+                                Caption="Имя исполнителя">
+                </DataGridColumn>
+                <DataGridColumn TItem="AlbumsActorsDto"
+                                Field="@nameof(AlbumsActorsDto.Description)"
+                                Caption="Описание">
+                </DataGridColumn>
+                <DataGridColumn TItem="AlbumsActorsDto"
+                                Field="@nameof(AlbumsActorsDto.AlbumsCount)"
+                                Caption="Количество альбомов">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private IEnumerable<AlbumsActorsDto> AlbumsActors { get; set; } = new List<AlbumsActorsDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AlbumsActors = await MediaLibraryApi.GetMaxAlbumsActors();
+        await base.OnInitializedAsync();
+    }
+}

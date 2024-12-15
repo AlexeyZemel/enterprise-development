@@ -79,7 +79,7 @@ public class QueryController(QueryService queryService) : Controller
     /// <returns>Минимальная, максимальная и средняя продолжительность альбомов</returns>
     [HttpGet]
     [Route("time-albums-info")]
-    public async Task<ActionResult<List<TimeAlbumDto>>> GetTimeAlbumsInfo()
+    public async Task<ActionResult<TimeAlbumDto>> GetTimeAlbumsInfo()
     {
         return Ok(await queryService.GetTimeAlbumsInfo());
     }

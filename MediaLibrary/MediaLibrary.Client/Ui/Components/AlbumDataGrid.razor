@@ -1,0 +1,104 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Альбомы</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Создать
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="Album"
+                  Data="Albums"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="Album"
+                                Field="@nameof(Album.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteAlbumAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="Album"
+                                Field="@nameof(Album.ActorId)"
+                                Caption="Идентификатор исполнителя">
+                </DataGridColumn>
+                <DataGridColumn TItem="Album"
+                                Field="@nameof(Album.Name)"
+                                Caption="Название альбома">
+                </DataGridColumn>
+                <DataGridColumn TItem="Album"
+                                Field="@nameof(Album.Date)"
+                                Caption="Дата релиза">
+                    <DisplayTemplate>
+                        @context.Date.ToString("yyyy-MM-dd")
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<AlbumCreateModal @ref="AlbumCreateModal" OnAlbumAdded="@HandleAlbumListChanged" />
+<AlbumUpdateModal @ref="AlbumUpdateModal" AlbumToUpdate="SelectedAlbum" Id="SelectedId" OnAlbumUpdated="@HandleAlbumListChanged" />
+
+@code {
+    private IEnumerable<Album> Albums { get; set; } = [];
+    private int SelectedId { get; set; }
+    private AlbumDto? SelectedAlbum { get; set; }
+    private AlbumCreateModal AlbumCreateModal { get; set; } = new();
+    private AlbumUpdateModal AlbumUpdateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAlbumsCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OpenEditPageAsync(Album context)
+    {
+        SelectedId = context.Id;
+        SelectedAlbum = new()
+        {
+            ActorId = context.ActorId,
+            Name = context.Name,
+            Date = context.Date
+        };
+        await AlbumUpdateModal.Show();
+    }
+
+    private async Task DeleteAlbumAsync(Album context)
+    {
+        await MediaLibraryApi.DeleteAlbum(context.ActorId);
+        await RefreshAlbumsCollection();
+    }
+
+    private async Task HandleAlbumListChanged()
+    {
+        await RefreshAlbumsCollection();
+    }
+
+    private async Task OpenCreateModal() => await AlbumCreateModal.Show();
+
+    private async Task RefreshAlbumsCollection() => Albums = await MediaLibraryApi.GetAllAlbum();
+}

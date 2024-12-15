@@ -1,0 +1,103 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Modal @ref="TrackModal">
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Список альбомов пуст или ошибка при обновлении трека!</AlertMessage>
+    </Alert>
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Изменить трек</ModalTitle>
+                <CloseButton Clicked="CloseTrackModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                @if (TrackToUpdate != null)
+                {
+                    <Field>
+                        <FieldLabel>Выберите альбом</FieldLabel>
+                        <Select TValue="int" @bind-SelectedValue="TrackToUpdate!.AlbumId">
+                            @if (Albums != null)
+                            {
+                                @foreach (var album in Albums)
+                                {
+                                    <SelectItem Value="@album.Id">@($"{album.Id} | {album.Name}")</SelectItem>
+                                }
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>Номер трека</FieldLabel>
+                        <InputNumber TValue="int" @bind-Value="TrackToUpdate.Number" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>Название трека</FieldLabel>
+                        <TextEdit @bind-Text="TrackToUpdate.Name" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>Продолжительность трека</FieldLabel>
+                        <InputText @bind-Value="TrackToUpdate.Time" />
+                    </Field>
+                }
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseTrackModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="UpdateTrackAsync">Изменить</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnTrackUpdated { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public TrackDto? TrackToUpdate { get; set; }
+    private IEnumerable<Album>? Albums { get; set; }
+    private Modal TrackModal { get; set; } = new();
+    private bool IsAlertVisible { get; set; } = false;
+
+    public async Task Show()
+    {
+        await LoadAlbumsAsync();
+        TrackToUpdate!.Time = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
+        await TrackModal.Show();
+    }
+
+    private async Task CloseTrackModalAsync()
+    {
+        IsAlertVisible = false;
+        TrackToUpdate = new();
+        await TrackModal.Hide();
+    }
+
+    private async Task LoadAlbumsAsync()
+    {
+        Albums = await MediaLibraryApi.GetAllAlbum();
+        if (Albums.FirstOrDefault() is null)
+        {
+            TrackToUpdate!.AlbumId = 0;
+        }
+        else
+        {
+            TrackToUpdate!.AlbumId = Albums.FirstOrDefault()!.Id;
+        }
+    }
+
+    private async Task UpdateTrackAsync()
+    {
+        try
+        {
+            await MediaLibraryApi.UpdateTrack(Id, TrackToUpdate!);
+            await CloseTrackModalAsync();
+            await OnTrackUpdated.InvokeAsync();
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+}

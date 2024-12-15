@@ -7,7 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaLibrary.Domain", "Medi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaLibrary.Tests", "MediaLibrary.Tests\MediaLibrary.Tests.csproj", "{D3CD39F3-1717-4214-8477-F3849303C2BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaLibrary.API", "MediaLibrary.API\MediaLibrary.API.csproj", "{167236A4-4064-4C4C-A8ED-45995595C958}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaLibrary.API", "MediaLibrary.API\MediaLibrary.API.csproj", "{167236A4-4064-4C4C-A8ED-45995595C958}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaLibrary.Client", "MediaLibrary.Client\MediaLibrary.Client.csproj", "{0E855CE2-8979-48D4-ACEB-739D197F100A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{167236A4-4064-4C4C-A8ED-45995595C958} = {167236A4-4064-4C4C-A8ED-45995595C958}
+		{575B6F2E-3D91-467A-B3A9-1C236B4B02CE} = {575B6F2E-3D91-467A-B3A9-1C236B4B02CE}
+		{D3CD39F3-1717-4214-8477-F3849303C2BE} = {D3CD39F3-1717-4214-8477-F3849303C2BE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +34,10 @@ Global
 		{167236A4-4064-4C4C-A8ED-45995595C958}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{167236A4-4064-4C4C-A8ED-45995595C958}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{167236A4-4064-4C4C-A8ED-45995595C958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E855CE2-8979-48D4-ACEB-739D197F100A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E855CE2-8979-48D4-ACEB-739D197F100A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E855CE2-8979-48D4-ACEB-739D197F100A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E855CE2-8979-48D4-ACEB-739D197F100A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

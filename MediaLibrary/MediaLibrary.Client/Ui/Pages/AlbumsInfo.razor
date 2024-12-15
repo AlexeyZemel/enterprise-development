@@ -1,0 +1,56 @@
+﻿@page "/albums-info"
+@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+        <AlertMessage>Вы не ввели корректный год альбома или данных нет!</AlertMessage>
+    </Alert>
+    <CardHeader>
+        <h4>Информация об альбомах в году</h4>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="AlbumInfoDto" Data="Albums" Responsive Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="AlbumInfoDto" Field="@nameof(AlbumInfoDto.Name)" Caption="Название альбома" />
+                <DataGridColumn TItem="AlbumInfoDto" Field="@nameof(AlbumInfoDto.TrackCount)" Caption="Количество треков" />
+                <DataGridColumn TItem="AlbumInfoDto" Field="@nameof(AlbumInfoDto.Date)" Caption="Дата релиза">
+                     <DisplayTemplate>
+                        @context.Date.ToString("yyyy-MM-dd")
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<Div>
+    <label>Год альбома:</label>
+    <InputNumber @bind-Value="Year" />
+
+    <Button Color="Color.Primary" Clicked="RefreshAlbumsCollection">Поиск</Button>
+</Div>
+
+@code {
+    private IEnumerable<AlbumInfoDto> Albums { get; set; } = new List<AlbumInfoDto>();
+    private int Year { get; set; } = 0;  
+    private bool IsAlertVisible { get; set; } = false;
+
+    private async Task RefreshAlbumsCollection()
+    {
+        try
+        {
+            if (Year >= 2025 && Year <= 1900)
+            {
+                IsAlertVisible = true;
+                return;
+            }
+
+            Albums = await MediaLibraryApi.GetAlbumsInfo(Year);
+            IsAlertVisible = false;
+        }
+        catch
+        {
+            IsAlertVisible = true;
+        }
+    }
+}

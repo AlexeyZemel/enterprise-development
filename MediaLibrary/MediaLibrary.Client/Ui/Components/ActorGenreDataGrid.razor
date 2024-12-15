@@ -1,0 +1,119 @@
+﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Актеры и Жанры</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Создать
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="ActorGenre"
+                  Data="ActorGenres"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="ActorGenre"
+                                Field="@nameof(ActorGenre.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteActorGenreAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="ActorGenre"
+                                Field="@nameof(ActorGenre.ActorId)"
+                                Caption="Актер">
+                    <DisplayTemplate>
+                        @GetActorName(context.ActorId)
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="ActorGenre"
+                                Field="@nameof(ActorGenre.GenreId)"
+                                Caption="Жанр">
+                    <DisplayTemplate>
+                        @GetGenreName(context.GenreId)
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<ActorGenreCreateModal @ref="ActorGenreCreateModal" OnActorGenreAdded="@HandleActorGenreListChanged" />
+<ActorGenreUpdateModal @ref="ActorGenreUpdateModal" ActorGenreToUpdate="SelectedActorGenre" AgId="SelectedActorGenreId" OnActorGenreUpdated="@HandleActorGenreListChanged" />
+
+@code {
+    private IEnumerable<ActorGenre> ActorGenres { get; set; } = new List<ActorGenre>();
+    private IEnumerable<Actor>? Actors { get; set; }
+    private IEnumerable<Genre>? Genres { get; set; }
+    private int SelectedActorGenreId { get; set; }
+    private ActorGenreDto? SelectedActorGenre { get; set; }
+    private ActorGenreCreateModal ActorGenreCreateModal { get; set; } = new();
+    private ActorGenreUpdateModal ActorGenreUpdateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshActorGenreCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OpenEditPageAsync(ActorGenre context)
+    {
+        SelectedActorGenreId = context.Id;
+        SelectedActorGenre = new ActorGenreDto
+            {
+                ActorId = context.ActorId,
+                GenreId = context.GenreId
+            };
+        await ActorGenreUpdateModal.Show();
+    }
+
+    private async Task DeleteActorGenreAsync(ActorGenre context)
+    {
+        await MediaLibraryApi.DeleteActorGenre(context.Id);
+        await RefreshActorGenreCollection();
+    }
+
+    private async Task HandleActorGenreListChanged()
+    {
+        await RefreshActorGenreCollection();
+    }
+
+    private async Task OpenCreateModal() => await ActorGenreCreateModal.Show();
+
+    private async Task RefreshActorGenreCollection()
+    {
+        ActorGenres = await MediaLibraryApi.GetAllActorGenre();
+        Actors = await MediaLibraryApi.GetAllActor();
+        Genres = await MediaLibraryApi.GetAllGenre();
+    }
+
+    private string GetActorName(int actorId)
+    {
+        return Actors?.FirstOrDefault(a => a.Id == actorId)?.Name ?? "Неизвестный актер";
+    }
+
+    private string GetGenreName(int genreId)
+    {
+        return Genres?.FirstOrDefault(g => g.Id == genreId)?.Name ?? "Неизвестный жанр";
+    }
+}

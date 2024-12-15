@@ -35,5 +35,5 @@ public class Album
     /// </summary>
     [Column("date")]
     [Required]
-    public required DateTime Date { get; set; }
+    public required DateOnly Date { get; set; }
 }
