@@ -1,7 +1,7 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="AlbumModal">
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+<Modal @ref="_albumModal">
+    <Alert Color="Color.Danger" @bind-Visible="@_isAlertVisible">
         <AlertMessage>Не удалось создать альбом. Проверьте данные и попробуйте снова.</AlertMessage>
     </Alert>
     <ModalContent Centered>
@@ -14,10 +14,10 @@
             <ModalBody>
                 <Field>
                     <FieldLabel>Исполнитель</FieldLabel>
-                    <Select TValue="int" @bind-SelectedValue="NewAlbum.ActorId">
-                        @if (Actors != null)
+                    <Select TValue="int" @bind-SelectedValue="_newAlbum.ActorId">
+                        @if (_actors != null)
                         {
-                            @foreach (var actor in Actors)
+                            @foreach (var actor in _actors)
                             {
                                 <SelectItem Value="@actor.Id">@($"{actor.Id} | {actor.Name}")</SelectItem>
                             }
@@ -26,11 +26,11 @@
                 </Field>
                 <Field>
                     <FieldLabel>Название альбома</FieldLabel>
-                    <TextEdit @bind-Text="NewAlbum.Name" />
+                    <TextEdit @bind-Text="_newAlbum.Name" />
                 </Field>
                 <Field>
                     <FieldLabel>Дата релиза</FieldLabel>
-                    <InputDate @bind-Value="NewAlbum.Date" />
+                    <InputDate @bind-Value="_newAlbum.Date" />
                 </Field>
             </ModalBody>
 
@@ -46,49 +46,49 @@
     [Parameter]
     public EventCallback OnAlbumAdded { get; set; }
 
-    private Modal AlbumModal { get; set; } = new();
-    private AlbumDto NewAlbum { get; set; } = new();
-    private IEnumerable<Actor>? Actors { get; set; }
-    private bool IsAlertVisible { get; set; } = false;
+    private Modal _albumModal = new();
+    private AlbumDto _newAlbum = new();
+    private IEnumerable<Actor>? _actors;
+    private bool _isAlertVisible = false;
 
     public async Task Show()
     {
         await LoadActorsAsync();
-        NewAlbum.Date = DateTime.Now;
-        await AlbumModal.Show();
+        _newAlbum.Date = DateTime.Now;
+        await _albumModal.Show();
     }
 
     private async Task CloseAlbumModalAsync()
     {
-        IsAlertVisible = false;
-        NewAlbum = new();
-        await AlbumModal.Hide();
+        _isAlertVisible = false;
+        _newAlbum = new();
+        await _albumModal.Hide();
     }
 
     private async Task CreateAlbumAsync()
     {
         try
         {
-            await MediaLibraryApi.CreateAlbum(NewAlbum);
+            await MediaLibraryApi.CreateAlbum(_newAlbum);
             await CloseAlbumModalAsync();
             await OnAlbumAdded.InvokeAsync();
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 
     private async Task LoadActorsAsync()
     {
-        Actors = await MediaLibraryApi.GetAllActor();
-        if (Actors.FirstOrDefault() is null)
+        _actors = await MediaLibraryApi.GetAllActor();
+        if (_actors.FirstOrDefault() is null)
         {
-            NewAlbum.ActorId = 0;
+            _newAlbum.ActorId = 0;
         }
         else
         {
-            NewAlbum.ActorId = Actors.FirstOrDefault()!.Id;
+            _newAlbum.ActorId = _actors.FirstOrDefault()!.Id;
         }
     }
 }

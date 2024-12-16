@@ -1,6 +1,6 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="GenreModal">
+<Modal @ref="_genreModal">
     <ModalContent Centered>
         <Form>
             <ModalHeader>
@@ -34,18 +34,18 @@
     [Parameter]
     public GenreDto? GenreToUpdate { get; set; }
 
-    private Modal GenreModal { get; set; } = new();
+    private Modal _genreModal = new(); 
 
-    public async Task Show() => await GenreModal.Show();
+    public async Task Show() => await _genreModal.Show();
 
-    private async Task CloseGenreModalAsync() => await GenreModal.Hide();
+    private async Task CloseGenreModalAsync() => await _genreModal.Hide();
 
     private async Task UpdateGenreAsync()
     {
         if (GenreToUpdate != null)
         {
             await MediaLibraryApi.UpdateGenre(Id, GenreToUpdate);
-            await GenreModal.Hide();
+            await _genreModal.Hide();
             await OnGenreUpdated.InvokeAsync();
         }
     }

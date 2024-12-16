@@ -1,6 +1,6 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="GenreModal">
+<Modal @ref="_genreModal">
     <ModalContent Centered>
         <Form>
             <ModalHeader>
@@ -11,7 +11,7 @@
             <ModalBody>
                 <Field>
                     <FieldLabel>Название жанра</FieldLabel>
-                    <InputText @bind-Value="NewGenre.Name" />
+                    <InputText @bind-Value="_newGenre.Name" />
                 </Field>
             </ModalBody>
 
@@ -27,22 +27,22 @@
     [Parameter]
     public EventCallback OnGenreAdded { get; set; }
 
-    private Modal GenreModal { get; set; } = new();
-    private GenreDto NewGenre { get; set; } = new();
+    private Modal _genreModal = new(); 
+    private GenreDto _newGenre = new(); 
 
-    public async Task Show() => await GenreModal.Show();
+    public async Task Show() => await _genreModal.Show();
 
     private async Task CloseGenreModalAsync()
     {
-        NewGenre = new GenreDto();
-        await GenreModal.Hide();
+        _newGenre = new GenreDto();
+        await _genreModal.Hide();
     }
 
     private async Task CreateGenreAsync()
     {
-        await MediaLibraryApi.CreateGenre(NewGenre);
-        NewGenre = new GenreDto();
-        await GenreModal.Hide();
+        await MediaLibraryApi.CreateGenre(_newGenre);
+        _newGenre = new GenreDto();
+        await _genreModal.Hide();
         await OnGenreAdded.InvokeAsync();
     }
 }

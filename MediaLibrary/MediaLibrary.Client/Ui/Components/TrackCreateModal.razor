@@ -1,7 +1,7 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="TrackModal">
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+<Modal @ref="_trackModal">
+    <Alert Color="Color.Danger" @bind-Visible="_isAlertVisible">
         <AlertMessage>Не удалось создать трек. Проверьте данные и попробуйте снова.</AlertMessage>
     </Alert>
     <ModalContent Centered>
@@ -14,10 +14,10 @@
             <ModalBody>
                 <Field>
                     <FieldLabel>Альбом</FieldLabel>
-                    <Select TValue="int" @bind-SelectedValue="NewTrack.AlbumId">
-                        @if (Albums != null)
+                    <Select TValue="int" @bind-SelectedValue="_newTrack.AlbumId">
+                        @if (_albums != null)
                         {
-                            @foreach (var album in Albums)
+                            @foreach (var album in _albums)
                             {
                                 <SelectItem Value="@album.Id">@($"{album.Id} | {album.Name}")</SelectItem>
                             }
@@ -26,15 +26,15 @@
                 </Field>
                 <Field>
                     <FieldLabel>Номер трека</FieldLabel>
-                    <InputNumber @bind-Value="NewTrack.Number" />
+                    <InputNumber @bind-Value="_newTrack.Number" />
                 </Field>
                 <Field>
                     <FieldLabel>Название трека</FieldLabel>
-                    <TextEdit @bind-Text="NewTrack.Name" />
+                    <TextEdit @bind-Text="_newTrack.Name" />
                 </Field>
                 <Field>
                     <FieldLabel>Продолжительность трека</FieldLabel>
-                    <TextEdit @bind-Text="NewTrack.Time" />
+                    <TextEdit @bind-Text="_newTrack.Time" />
                 </Field>
             </ModalBody>
 
@@ -50,49 +50,49 @@
     [Parameter]
     public EventCallback OnTrackAdded { get; set; }
 
-    private Modal TrackModal { get; set; } = new();
-    private TrackDto NewTrack { get; set; } = new();
-    private IEnumerable<Album>? Albums { get; set; }
-    private bool IsAlertVisible { get; set; } = false;
+    private Modal _trackModal = new();
+    private TrackDto _newTrack = new();
+    private IEnumerable<Album>? _albums;
+    private bool _isAlertVisible = false;
 
     public async Task Show()
     {
         await LoadAlbumsAsync();
-        NewTrack.Time = "00:00:00";
-        await TrackModal.Show();
+        _newTrack.Time = "00:00:00";
+        await _trackModal.Show();
     }
 
     private async Task CloseTrackModalAsync()
     {
-        IsAlertVisible = false;
-        NewTrack = new();
-        await TrackModal.Hide();
+        _isAlertVisible = false;
+        _newTrack = new();
+        await _trackModal.Hide();
     }
 
     private async Task CreateTrackAsync()
     {
         try
         {
-            await MediaLibraryApi.CreateTrack(NewTrack);
+            await MediaLibraryApi.CreateTrack(_newTrack);
             await CloseTrackModalAsync();
             await OnTrackAdded.InvokeAsync();
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 
     private async Task LoadAlbumsAsync()
     {
-        Albums = await MediaLibraryApi.GetAllAlbum();
-        if (Albums?.FirstOrDefault() is null)
+        _albums = await MediaLibraryApi.GetAllAlbum();
+        if (_albums?.FirstOrDefault() is null)
         {
-            NewTrack.AlbumId = 0;   
+            _newTrack.AlbumId = 0;
         }
         else
         {
-            NewTrack.AlbumId = Albums.FirstOrDefault()!.Id;
+            _newTrack.AlbumId = _albums.FirstOrDefault()!.Id;
         }
     }
 }

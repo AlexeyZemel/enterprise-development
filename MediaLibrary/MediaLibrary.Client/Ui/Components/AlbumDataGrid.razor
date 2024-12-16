@@ -15,7 +15,7 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="Album"
-                  Data="Albums"
+                  Data="_albums"
                   Responsive
                   Striped>
             <DataGridColumns>
@@ -59,15 +59,15 @@
     </CardBody>
 </Card>
 
-<AlbumCreateModal @ref="AlbumCreateModal" OnAlbumAdded="@HandleAlbumListChanged" />
-<AlbumUpdateModal @ref="AlbumUpdateModal" AlbumToUpdate="SelectedAlbum" Id="SelectedId" OnAlbumUpdated="@HandleAlbumListChanged" />
+<AlbumCreateModal @ref="_albumCreateModal" OnAlbumAdded="@HandleAlbumListChanged" />
+<AlbumUpdateModal @ref="_albumUpdateModal" AlbumToUpdate="_selectedAlbum" Id="_selectedId" OnAlbumUpdated="@HandleAlbumListChanged" />
 
 @code {
-    private IEnumerable<Album> Albums { get; set; } = [];
-    private int SelectedId { get; set; }
-    private AlbumDto? SelectedAlbum { get; set; }
-    private AlbumCreateModal AlbumCreateModal { get; set; } = new();
-    private AlbumUpdateModal AlbumUpdateModal { get; set; } = new();
+    private IEnumerable<Album> _albums = [];
+    private int _selectedId;
+    private AlbumDto? _selectedAlbum;
+    private AlbumCreateModal _albumCreateModal = new();
+    private AlbumUpdateModal _albumUpdateModal = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,14 +77,14 @@
 
     private async Task OpenEditPageAsync(Album context)
     {
-        SelectedId = context.Id;
-        SelectedAlbum = new()
-        {
-            ActorId = context.ActorId,
-            Name = context.Name,
-            Date = context.Date
-        };
-        await AlbumUpdateModal.Show();
+        _selectedId = context.Id;
+        _selectedAlbum = new()
+            {
+                ActorId = context.ActorId,
+                Name = context.Name,
+                Date = context.Date
+            };
+        await _albumUpdateModal.Show();
     }
 
     private async Task DeleteAlbumAsync(Album context)
@@ -98,7 +98,7 @@
         await RefreshAlbumsCollection();
     }
 
-    private async Task OpenCreateModal() => await AlbumCreateModal.Show();
+    private async Task OpenCreateModal() => await _albumCreateModal.Show();
 
-    private async Task RefreshAlbumsCollection() => Albums = await MediaLibraryApi.GetAllAlbum();
+    private async Task RefreshAlbumsCollection() => _albums = await MediaLibraryApi.GetAllAlbum();
 }

@@ -15,7 +15,7 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="Track"
-                  Data="Tracks"
+                  Data="_tracks"
                   Responsive
                   Striped>
             <DataGridColumns>
@@ -50,7 +50,7 @@
                 <DataGridColumn TItem="Track"
                                 Field="@nameof(Track.Time)"
                                 Caption="Продолжительность">
-                 
+
                 </DataGridColumn>
                 <DataGridColumn TItem="Track" Caption="Альбом">
                     <DisplayTemplate>
@@ -62,16 +62,16 @@
     </CardBody>
 </Card>
 
-<TrackCreateModal @ref="TrackCreateModal" OnTrackAdded="@HandleTrackListChanged" />
-<TrackUpdateModal @ref="TrackUpdateModal" TrackToUpdate="SelectedTrack" Id="SelectedId" OnTrackUpdated="@HandleTrackListChanged" />
+<TrackCreateModal @ref="_trackCreateModal" OnTrackAdded="@HandleTrackListChanged" />
+<TrackUpdateModal @ref="_trackUpdateModal" TrackToUpdate="_selectedTrack" Id="_selectedId" OnTrackUpdated="@HandleTrackListChanged" />
 
 @code {
-    private IEnumerable<Track> Tracks { get; set; } = [];
-    private IEnumerable<Album>? Albums { get; set; }
-    private int SelectedId { get; set; }
-    private TrackDto? SelectedTrack { get; set; }
-    private TrackCreateModal TrackCreateModal { get; set; } = new();
-    private TrackUpdateModal TrackUpdateModal { get; set; } = new();
+    private IEnumerable<Track> _tracks = [];
+    private IEnumerable<Album>? _albums;
+    private int _selectedId;
+    private TrackDto? _selectedTrack;
+    private TrackCreateModal _trackCreateModal = new();
+    private TrackUpdateModal _trackUpdateModal = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,15 +81,15 @@
 
     private async Task OpenEditPageAsync(Track context)
     {
-        SelectedId = context.Id;
-        SelectedTrack = new()
-        {
-            Number = context.Number,
-            Name = context.Name,
-            AlbumId = context.AlbumId,
-            Time = context.Time
-        };
-        await TrackUpdateModal.Show();
+        _selectedId = context.Id;
+        _selectedTrack = new TrackDto
+            {
+                Number = context.Number,
+                Name = context.Name,
+                AlbumId = context.AlbumId,
+                Time = context.Time
+            };
+        await _trackUpdateModal.Show();
     }
 
     private async Task DeleteTrackAsync(Track context)
@@ -103,16 +103,16 @@
         await RefreshTracksCollection();
     }
 
-    private async Task OpenCreateModal() => await TrackCreateModal.Show();
+    private async Task OpenCreateModal() => await _trackCreateModal.Show();
 
     private async Task RefreshTracksCollection()
     {
-        Tracks = await MediaLibraryApi.GetAllTrack();
-        Albums = await MediaLibraryApi.GetAllAlbum();
+        _tracks = await MediaLibraryApi.GetAllTrack();
+        _albums = await MediaLibraryApi.GetAllAlbum();
     }
 
     private string GetAlbumName(int albumId)
     {
-        return Albums?.FirstOrDefault(a => a.Id == albumId)?.Name ?? "Неизвестный альбом";
+        return _albums?.FirstOrDefault(a => a.Id == albumId)?.Name ?? "Неизвестный альбом";
     }
 }

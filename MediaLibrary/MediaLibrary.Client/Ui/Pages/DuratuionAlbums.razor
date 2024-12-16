@@ -6,7 +6,7 @@
         <h4>Продолжительность альбомов</h4>
     </CardHeader>
     <CardBody>
-        <DataGrid TItem="TimeAlbumDto" Data="new[] { AlbumDurations }" Responsive Striped>
+        <DataGrid TItem="TimeAlbumDto" Data="new[] { _albumDurations }" Responsive Striped>
             <DataGridColumns>
                 <DataGridColumn TItem="TimeAlbumDto" Field="@nameof(TimeAlbumDto.MinTime)" Caption="Минимальная продолжительность (в секундах)" />
                 <DataGridColumn TItem="TimeAlbumDto" Field="@nameof(TimeAlbumDto.AvgTime)" Caption="Средняя продолжительность (в секундах)" />
@@ -17,11 +17,11 @@
 </Card>
 
 @code {
-    private TimeAlbumDto AlbumDurations { get; set; } = new();
+    private TimeAlbumDto _albumDurations = new();
 
     protected override async Task OnInitializedAsync()
     {
-        AlbumDurations = await MediaLibraryApi.GetTimeAlbumsInfo();
+        _albumDurations = await MediaLibraryApi.GetTimeAlbumsInfo();
         await base.OnInitializedAsync();
     }
 }

@@ -2,14 +2,14 @@
 @inject IMediaLibraryApiWrapper MediaLibraryApi
 
 <Card>
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+    <Alert Color="Color.Danger" @bind-Visible="@_isAlertVisible">
         <AlertMessage>Вы не ввели корректный год альбома или данных нет!</AlertMessage>
     </Alert>
     <CardHeader>
         <h4>Информация об альбомах в году</h4>
     </CardHeader>
     <CardBody>
-        <DataGrid TItem="AlbumInfoDto" Data="Albums" Responsive Striped>
+        <DataGrid TItem="AlbumInfoDto" Data="_albums" Responsive Striped>
             <DataGridColumns>
                 <DataGridColumn TItem="AlbumInfoDto" Field="@nameof(AlbumInfoDto.Name)" Caption="Название альбома" />
                 <DataGridColumn TItem="AlbumInfoDto" Field="@nameof(AlbumInfoDto.TrackCount)" Caption="Количество треков" />
@@ -25,32 +25,32 @@
 
 <Div>
     <label>Год альбома:</label>
-    <InputNumber @bind-Value="Year" />
+    <InputNumber @bind-Value="_year" />
 
     <Button Color="Color.Primary" Clicked="RefreshAlbumsCollection">Поиск</Button>
 </Div>
 
 @code {
-    private IEnumerable<AlbumInfoDto> Albums { get; set; } = new List<AlbumInfoDto>();
-    private int Year { get; set; } = 0;  
-    private bool IsAlertVisible { get; set; } = false;
+    private IEnumerable<AlbumInfoDto> _albums = new List<AlbumInfoDto>();
+    private int _year = 0;  
+    private bool _isAlertVisible = false;
 
     private async Task RefreshAlbumsCollection()
     {
         try
         {
-            if (Year >= 2025 && Year <= 1900)
+            if (_year >= 2025 && _year <= 1900)
             {
-                IsAlertVisible = true;
+                _isAlertVisible = true;
                 return;
             }
 
-            Albums = await MediaLibraryApi.GetAlbumsInfo(Year);
-            IsAlertVisible = false;
+            _albums = await MediaLibraryApi.GetAlbumsInfo(_year);
+            _isAlertVisible = false;
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 }

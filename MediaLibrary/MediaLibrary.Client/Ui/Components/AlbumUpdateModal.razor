@@ -1,7 +1,7 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="AlbumModal">
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+<Modal @ref="_albumModal">
+    <Alert Color="Color.Danger" @bind-Visible="@_isAlertVisible">
         <AlertMessage>Список исполнителей пуст или ошибка при обновлении альбома!</AlertMessage>
     </Alert>
     <ModalContent Centered>
@@ -17,9 +17,9 @@
                     <Field>
                         <FieldLabel>Выберите исполнителя</FieldLabel>
                         <Select TValue="int" @bind-SelectedValue="AlbumToUpdate!.ActorId">
-                            @if (Actors != null)
+                            @if (_actors != null)
                             {
-                                @foreach (var actor in Actors)
+                                @foreach (var actor in _actors)
                                 {
                                     <SelectItem Value="@actor.Id">@($"{actor.Id} | {actor.Name}")</SelectItem>
                                 }
@@ -52,34 +52,35 @@
     public int Id { get; set; }
     [Parameter]
     public AlbumDto? AlbumToUpdate { get; set; }
-    private IEnumerable<Actor>? Actors { get; set; }
-    private Modal AlbumModal { get; set; } = new();
-    private bool IsAlertVisible { get; set; } = false;
+
+    private IEnumerable<Actor>? _actors;
+    private Modal _albumModal = new();   
+    private bool _isAlertVisible = false;
 
     public async Task Show()
     {
         await LoadActorsAsync();
         AlbumToUpdate!.Date = DateTime.Now;
-        await AlbumModal.Show();
+        await _albumModal.Show();
     }
 
     private async Task CloseAlbumModalAsync()
     {
-        IsAlertVisible = false;
+        _isAlertVisible = false;
         AlbumToUpdate = new();
-        await AlbumModal.Hide();
+        await _albumModal.Hide();
     }
 
     private async Task LoadActorsAsync()
     {
-        Actors = await MediaLibraryApi.GetAllActor();
-        if (Actors.FirstOrDefault() is null)
+        _actors = await MediaLibraryApi.GetAllActor();
+        if (_actors?.FirstOrDefault() is null)
         {
             AlbumToUpdate!.ActorId = 0;
         }
         else
         {
-            AlbumToUpdate!.ActorId = Actors.FirstOrDefault()!.Id;
+            AlbumToUpdate!.ActorId = _actors.FirstOrDefault()!.Id;
         }
     }
 
@@ -93,7 +94,7 @@
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 }

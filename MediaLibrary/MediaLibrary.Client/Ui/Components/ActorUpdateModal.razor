@@ -1,6 +1,6 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="ActorModal">
+<Modal @ref="_actorModal">
     <ModalContent Centered>
         <Form>
             <ModalHeader>
@@ -41,17 +41,16 @@
     [Parameter]
     public ActorDto? ActorToUpdate { get; set; }
 
-    private Modal ActorModal { get; set; } = new();
+    private Modal _actorModal = new();
 
-    public async Task Show() => await ActorModal.Show();
+    public async Task Show() => await _actorModal.Show();
 
-    private async Task CloseActorModalAsync() => await ActorModal.Hide();
+    private async Task CloseActorModalAsync() => await _actorModal.Hide();
 
     private async Task UpdateActorAsync()
     {
-
         await MediaLibraryApi.UpdateActor(Id, ActorToUpdate!);
-        await ActorModal.Hide();
+        await _actorModal.Hide();
         await OnActorUpdated.InvokeAsync();
     }
 }

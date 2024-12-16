@@ -15,7 +15,7 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="Genre"
-                  Data="Genres"
+                  Data="_genres"
                   Responsive
                   Striped>
             <DataGridColumns>
@@ -48,15 +48,15 @@
     </CardBody>
 </Card>
 
-<GenreCreateModal @ref="GenreCreateModal" OnGenreAdded="@HandleGenreListChanged" />
-<GenreUpdateModal @ref="GenreUpdateModal" GenreToUpdate="SelectedGenre" Id="SelectedId" OnGenreUpdated="@HandleGenreListChanged" />
+<GenreCreateModal @ref="_genreCreateModal" OnGenreAdded="@HandleGenreListChanged" />
+<GenreUpdateModal @ref="_genreUpdateModal" GenreToUpdate="_selectedGenre" Id="_selectedId" OnGenreUpdated="@HandleGenreListChanged" />
 
 @code {
-    private IEnumerable<Genre> Genres { get; set; } = [];
-    private int SelectedId { get; set; }
-    private GenreDto? SelectedGenre { get; set; }
-    private GenreCreateModal GenreCreateModal { get; set; } = new();
-    private GenreUpdateModal GenreUpdateModal { get; set; } = new();
+    private IEnumerable<Genre> _genres = new List<Genre>();
+    private int _selectedId;
+    private GenreDto? _selectedGenre;
+    private GenreCreateModal _genreCreateModal = new(); 
+    private GenreUpdateModal _genreUpdateModal = new(); 
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,12 +66,12 @@
 
     private async Task OpenEditPageAsync(Genre context)
     {
-        SelectedId = context.Id;
-        SelectedGenre = new()
+        _selectedId = context.Id;
+        _selectedGenre = new GenreDto
             {
                 Name = context.Name
             };
-        await GenreUpdateModal.Show();
+        await _genreUpdateModal.Show();
     }
 
     private async Task DeleteGenreAsync(Genre context)
@@ -85,7 +85,7 @@
         await RefreshGenresCollection();
     }
 
-    private async Task OpenCreateModal() => await GenreCreateModal.Show();
+    private async Task OpenCreateModal() => await _genreCreateModal.Show();
 
-    private async Task RefreshGenresCollection() => Genres = await MediaLibraryApi.GetAllGenre();
+    private async Task RefreshGenresCollection() => _genres = await MediaLibraryApi.GetAllGenre();
 }

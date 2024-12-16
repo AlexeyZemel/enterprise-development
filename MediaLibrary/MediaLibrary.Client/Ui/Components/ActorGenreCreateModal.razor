@@ -1,7 +1,7 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="ActorGenreModal">
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+<Modal @ref="_actorGenreModal">
+    <Alert Color="Color.Danger" @bind-Visible="@_isAlertVisible">
         <AlertMessage>Не удалось создать связь. Проверьте данные и попробуйте снова.</AlertMessage>
     </Alert>
     <ModalContent Centered>
@@ -14,10 +14,10 @@
             <ModalBody>
                 <Field>
                     <FieldLabel>Исполнитель</FieldLabel>
-                    <Select TValue="int" @bind-SelectedValue="NewActorGenre.ActorId">
-                        @if (Actors != null)
+                    <Select TValue="int" @bind-SelectedValue="_newActorGenre.ActorId">
+                        @if (_actors != null)
                         {
-                            @foreach (var actor in Actors)
+                            @foreach (var actor in _actors)
                             {
                                 <SelectItem Value="@actor.Id">@actor.Name</SelectItem>
                             }
@@ -27,10 +27,10 @@
 
                 <Field>
                     <FieldLabel>Жанр</FieldLabel>
-                    <Select TValue="int" @bind-SelectedValue="NewActorGenre.GenreId">
-                        @if (Genres != null)
+                    <Select TValue="int" @bind-SelectedValue="_newActorGenre.GenreId">
+                        @if (_genres != null)
                         {
-                            @foreach (var genre in Genres)
+                            @foreach (var genre in _genres)
                             {
                                 <SelectItem Value="@genre.Id">@genre.Name</SelectItem>
                             }
@@ -51,58 +51,58 @@
     [Parameter]
     public EventCallback OnActorGenreAdded { get; set; }
 
-    private Modal ActorGenreModal { get; set; } = new();
-    private ActorGenreDto NewActorGenre { get; set; } = new();
-    private IEnumerable<Actor>? Actors { get; set; }
-    private IEnumerable<Genre>? Genres { get; set; }
-    private bool IsAlertVisible { get; set; } = false;
+    private Modal _actorGenreModal = new();
+    private ActorGenreDto _newActorGenre = new();
+    private IEnumerable<Actor>? _actors;
+    private IEnumerable<Genre>? _genres;
+    private bool _isAlertVisible = false;
 
     public async Task Show()
     {
         await LoadActorsAndGenresAsync();
-        await ActorGenreModal.Show();
+        await _actorGenreModal.Show();
     }
 
     private async Task CloseActorGenreModalAsync()
     {
-        IsAlertVisible = false;
-        NewActorGenre = new();
-        await ActorGenreModal.Hide();
+        _isAlertVisible = false;
+        _newActorGenre = new();
+        await _actorGenreModal.Hide();
     }
 
     private async Task CreateActorGenreAsync()
     {
         try
         {
-            await MediaLibraryApi.CreateActorGenre(NewActorGenre);
+            await MediaLibraryApi.CreateActorGenre(_newActorGenre);
             await CloseActorGenreModalAsync();
             await OnActorGenreAdded.InvokeAsync();
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 
     private async Task LoadActorsAndGenresAsync()
     {
-        Actors = await MediaLibraryApi.GetAllActor(); 
-        if (Actors?.FirstOrDefault() is null)
+        _actors = await MediaLibraryApi.GetAllActor(); 
+        if (_actors?.FirstOrDefault() is null)
         {
-            NewActorGenre.ActorId = 0;
+            _newActorGenre.ActorId = 0;
         }
         else
         {
-            NewActorGenre.ActorId = Actors.FirstOrDefault()!.Id;
+            _newActorGenre.ActorId = _actors.FirstOrDefault()!.Id;
         }
-        Genres = await MediaLibraryApi.GetAllGenre();
-        if (Genres?.FirstOrDefault() is null)
+        _genres = await MediaLibraryApi.GetAllGenre();
+        if (_genres?.FirstOrDefault() is null)
         {
-            NewActorGenre.GenreId = 0;
+            _newActorGenre.GenreId = 0;
         }
         else
         {
-            NewActorGenre.GenreId = Genres.FirstOrDefault()!.Id;
+            _newActorGenre.GenreId = _genres.FirstOrDefault()!.Id;
         }
     }
 }

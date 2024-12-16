@@ -1,7 +1,7 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="TrackModal">
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+<Modal @ref="_trackModal">
+    <Alert Color="Color.Danger" @bind-Visible="_isAlertVisible">
         <AlertMessage>Список альбомов пуст или ошибка при обновлении трека!</AlertMessage>
     </Alert>
     <ModalContent Centered>
@@ -17,9 +17,9 @@
                     <Field>
                         <FieldLabel>Выберите альбом</FieldLabel>
                         <Select TValue="int" @bind-SelectedValue="TrackToUpdate!.AlbumId">
-                            @if (Albums != null)
+                            @if (_albums != null)
                             {
-                                @foreach (var album in Albums)
+                                @foreach (var album in _albums)
                                 {
                                     <SelectItem Value="@album.Id">@($"{album.Id} | {album.Name}")</SelectItem>
                                 }
@@ -56,34 +56,34 @@
     public int Id { get; set; }
     [Parameter]
     public TrackDto? TrackToUpdate { get; set; }
-    private IEnumerable<Album>? Albums { get; set; }
-    private Modal TrackModal { get; set; } = new();
-    private bool IsAlertVisible { get; set; } = false;
+    private IEnumerable<Album>? _albums;
+    private Modal _trackModal = new();
+    private bool _isAlertVisible = false;
 
     public async Task Show()
     {
         await LoadAlbumsAsync();
         TrackToUpdate!.Time = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
-        await TrackModal.Show();
+        await _trackModal.Show();
     }
 
     private async Task CloseTrackModalAsync()
     {
-        IsAlertVisible = false;
+        _isAlertVisible = false;
         TrackToUpdate = new();
-        await TrackModal.Hide();
+        await _trackModal.Hide();
     }
 
     private async Task LoadAlbumsAsync()
     {
-        Albums = await MediaLibraryApi.GetAllAlbum();
-        if (Albums.FirstOrDefault() is null)
+        _albums = await MediaLibraryApi.GetAllAlbum();
+        if (_albums.FirstOrDefault() is null)
         {
             TrackToUpdate!.AlbumId = 0;
         }
         else
         {
-            TrackToUpdate!.AlbumId = Albums.FirstOrDefault()!.Id;
+            TrackToUpdate!.AlbumId = _albums.FirstOrDefault()!.Id;
         }
     }
 
@@ -97,7 +97,7 @@
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 }

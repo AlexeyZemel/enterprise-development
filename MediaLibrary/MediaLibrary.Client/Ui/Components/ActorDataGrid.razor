@@ -15,7 +15,7 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="Actor"
-                  Data="Actors"
+                  Data="_actors"
                   Responsive
                   Striped>
             <DataGridColumns>
@@ -52,15 +52,15 @@
     </CardBody>
 </Card>
 
-<ActorCreateModal @ref="ActorCreateModal" OnActorAdded="@HandleActorListChanged" />
-<ActorUpdateModal @ref="ActorUpdateModal" ActorToUpdate="SelectedActor" Id="SelectedId" OnActorUpdated="@HandleActorListChanged" />
+<ActorCreateModal @ref="_actorCreateModal" OnActorAdded="@HandleActorListChanged" />
+<ActorUpdateModal @ref="_actorUpdateModal" ActorToUpdate="_selectedActor" Id="_selectedId" OnActorUpdated="@HandleActorListChanged" />
 
 @code {
-    private IEnumerable<Actor> Actors { get; set; } = [];
-    private int SelectedId { get; set; }
-    private ActorDto? SelectedActor { get; set; }
-    private ActorCreateModal ActorCreateModal { get; set; } = new();
-    private ActorUpdateModal ActorUpdateModal { get; set; } = new();
+    private IEnumerable<Actor> _actors = [];
+    private int _selectedId;
+    private ActorDto? _selectedActor;
+    private ActorCreateModal _actorCreateModal = new();
+    private ActorUpdateModal _actorUpdateModal = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,13 +70,13 @@
 
     private async Task OpenEditPageAsync(Actor context)
     {
-        SelectedId = context.Id;
-        SelectedActor = new()
+        _selectedId = context.Id;
+        _selectedActor = new()
         {
             Name = context.Name,
             Description = context.Description
         };
-        await ActorUpdateModal.Show();
+        await _actorUpdateModal.Show();
     }
 
     private async Task DeleteActorAsync(Actor context)
@@ -90,8 +90,8 @@
         await RefreshActorsCollection();
     }
 
-    private async Task OpenCreateModal() => await ActorCreateModal.Show();
+    private async Task OpenCreateModal() => await _actorCreateModal.Show();
 
-    private async Task RefreshActorsCollection() => Actors = await MediaLibraryApi.GetAllActor();
+    private async Task RefreshActorsCollection() => _actors = await MediaLibraryApi.GetAllActor();
 }
  

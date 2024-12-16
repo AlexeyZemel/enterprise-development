@@ -1,7 +1,7 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="ActorGenreModal">
-    <Alert Color="Color.Danger" @bind-Visible="@IsAlertVisible">
+<Modal @ref="_actorGenreModal">
+    <Alert Color="Color.Danger" @bind-Visible="@_isAlertVisible">
         <AlertMessage>Список актеров или жанров пуст!</AlertMessage>
     </Alert>
     <ModalContent Centered>
@@ -17,9 +17,9 @@
                     <Field>
                         <FieldLabel>Выберите актера</FieldLabel>
                         <Select TValue="int" @bind-SelectedValue="ActorGenreToUpdate!.ActorId">
-                            @if (Actors != null)
+                            @if (_actors != null)
                             {
-                                @foreach (var actor in Actors)
+                                @foreach (var actor in _actors)
                                 {
                                     <SelectItem Value="@actor.Id">@actor.Name</SelectItem>
                                 }
@@ -29,9 +29,9 @@
                     <Field>
                         <FieldLabel>Выберите жанр</FieldLabel>
                         <Select TValue="int" @bind-SelectedValue="ActorGenreToUpdate!.GenreId">
-                            @if (Genres != null)
+                            @if (_genres != null)
                             {
-                                @foreach (var genre in Genres)
+                                @foreach (var genre in _genres)
                                 {
                                     <SelectItem Value="@genre.Id">@genre.Name</SelectItem>
                                 }
@@ -57,23 +57,23 @@
     [Parameter]
     public ActorGenreDto? ActorGenreToUpdate { get; set; }
 
-    private IEnumerable<Actor>? Actors { get; set; }
-    private IEnumerable<Genre>? Genres { get; set; }
-    private Modal ActorGenreModal { get; set; } = new();
-    private bool IsAlertVisible { get; set; } = false;
+    private IEnumerable<Actor>? _actors;
+    private IEnumerable<Genre>? _genres;
+    private Modal _actorGenreModal = new();
+    private bool _isAlertVisible = false;
 
     public async Task Show()
     {
         await LoadActorsAsync();
         await LoadGenresAsync();
-        await ActorGenreModal.Show();
+        await _actorGenreModal.Show();
     }
 
     private async Task CloseActorGenreModalAsync()
     {
-        IsAlertVisible = false;
+        _isAlertVisible = false;
         ActorGenreToUpdate = new();
-        await ActorGenreModal.Hide();
+        await _actorGenreModal.Hide();
     }
 
     private async Task UpdateActorGenreAsync()
@@ -86,33 +86,33 @@
         }
         catch
         {
-            IsAlertVisible = true;
+            _isAlertVisible = true;
         }
     }
 
     private async Task LoadActorsAsync()
     {
-        Actors = await MediaLibraryApi.GetAllActor();
-        if (Actors?.FirstOrDefault() is null)
+        _actors = await MediaLibraryApi.GetAllActor();
+        if (_actors?.FirstOrDefault() is null)
         {
             ActorGenreToUpdate!.ActorId = 0;
         }
         else
         {
-            ActorGenreToUpdate!.ActorId = Actors.FirstOrDefault()!.Id;
+            ActorGenreToUpdate!.ActorId = _actors.FirstOrDefault()!.Id;
         }
     }
 
     private async Task LoadGenresAsync()
     {
-        Genres = await MediaLibraryApi.GetAllGenre();
-        if (Genres?.FirstOrDefault() is null)
+        _genres = await MediaLibraryApi.GetAllGenre();
+        if (_genres?.FirstOrDefault() is null)
         {
             ActorGenreToUpdate!.GenreId = 0;
         }
         else
         {
-            ActorGenreToUpdate!.GenreId = Genres.FirstOrDefault()!.Id;
+            ActorGenreToUpdate!.GenreId = _genres.FirstOrDefault()!.Id;
         }
     }
 }

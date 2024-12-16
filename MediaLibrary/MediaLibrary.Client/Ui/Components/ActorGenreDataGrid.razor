@@ -15,7 +15,7 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="ActorGenre"
-                  Data="ActorGenres"
+                  Data="_actorGenres"
                   Responsive
                   Striped>
             <DataGridColumns>
@@ -58,17 +58,17 @@
     </CardBody>
 </Card>
 
-<ActorGenreCreateModal @ref="ActorGenreCreateModal" OnActorGenreAdded="@HandleActorGenreListChanged" />
-<ActorGenreUpdateModal @ref="ActorGenreUpdateModal" ActorGenreToUpdate="SelectedActorGenre" AgId="SelectedActorGenreId" OnActorGenreUpdated="@HandleActorGenreListChanged" />
+<ActorGenreCreateModal @ref="_actorGenreCreateModal" OnActorGenreAdded="@HandleActorGenreListChanged" />
+<ActorGenreUpdateModal @ref="_actorGenreUpdateModal" ActorGenreToUpdate="_selectedActorGenre" AgId="_selectedId" OnActorGenreUpdated="@HandleActorGenreListChanged" />
 
 @code {
-    private IEnumerable<ActorGenre> ActorGenres { get; set; } = new List<ActorGenre>();
-    private IEnumerable<Actor>? Actors { get; set; }
-    private IEnumerable<Genre>? Genres { get; set; }
-    private int SelectedActorGenreId { get; set; }
-    private ActorGenreDto? SelectedActorGenre { get; set; }
-    private ActorGenreCreateModal ActorGenreCreateModal { get; set; } = new();
-    private ActorGenreUpdateModal ActorGenreUpdateModal { get; set; } = new();
+    private IEnumerable<ActorGenre> _actorGenres = new List<ActorGenre>();
+    private IEnumerable<Actor>? _actors;
+    private IEnumerable<Genre>? _genres;
+    private int _selectedId;
+    private ActorGenreDto? _selectedActorGenre;
+    private ActorGenreCreateModal _actorGenreCreateModal = new();
+    private ActorGenreUpdateModal _actorGenreUpdateModal = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,13 +78,13 @@
 
     private async Task OpenEditPageAsync(ActorGenre context)
     {
-        SelectedActorGenreId = context.Id;
-        SelectedActorGenre = new ActorGenreDto
-            {
-                ActorId = context.ActorId,
-                GenreId = context.GenreId
-            };
-        await ActorGenreUpdateModal.Show();
+        _selectedId = context.Id;
+        _selectedActorGenre = new ActorGenreDto
+        {
+            ActorId = context.ActorId,
+            GenreId = context.GenreId
+        };
+        await _actorGenreUpdateModal.Show();
     }
 
     private async Task DeleteActorGenreAsync(ActorGenre context)
@@ -98,22 +98,22 @@
         await RefreshActorGenreCollection();
     }
 
-    private async Task OpenCreateModal() => await ActorGenreCreateModal.Show();
+    private async Task OpenCreateModal() => await _actorGenreCreateModal.Show();
 
     private async Task RefreshActorGenreCollection()
     {
-        ActorGenres = await MediaLibraryApi.GetAllActorGenre();
-        Actors = await MediaLibraryApi.GetAllActor();
-        Genres = await MediaLibraryApi.GetAllGenre();
+        _actorGenres = await MediaLibraryApi.GetAllActorGenre();
+        _actors = await MediaLibraryApi.GetAllActor();
+        _genres = await MediaLibraryApi.GetAllGenre();
     }
 
     private string GetActorName(int actorId)
     {
-        return Actors?.FirstOrDefault(a => a.Id == actorId)?.Name ?? "Неизвестный актер";
+        return _actors?.FirstOrDefault(a => a.Id == actorId)?.Name ?? "Неизвестный актер";
     }
 
     private string GetGenreName(int genreId)
     {
-        return Genres?.FirstOrDefault(g => g.Id == genreId)?.Name ?? "Неизвестный жанр";
+        return _genres?.FirstOrDefault(g => g.Id == genreId)?.Name ?? "Неизвестный жанр";
     }
 }

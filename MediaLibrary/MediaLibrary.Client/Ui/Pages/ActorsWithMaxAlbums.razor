@@ -11,7 +11,7 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="AlbumsActorsDto"
-                  Data="AlbumsActors"
+                  Data="_albumsActors"
                   Responsive
                   Striped>
             <DataGridColumns>
@@ -33,11 +33,11 @@
 </Card>
 
 @code {
-    private IEnumerable<AlbumsActorsDto> AlbumsActors { get; set; } = new List<AlbumsActorsDto>();
+    private IEnumerable<AlbumsActorsDto> _albumsActors = new List<AlbumsActorsDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        AlbumsActors = await MediaLibraryApi.GetMaxAlbumsActors();
+        _albumsActors = await MediaLibraryApi.GetMaxAlbumsActors();
         await base.OnInitializedAsync();
     }
 }

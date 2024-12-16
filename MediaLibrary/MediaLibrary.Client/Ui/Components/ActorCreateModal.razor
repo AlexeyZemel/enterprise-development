@@ -1,6 +1,6 @@
 ﻿@inject IMediaLibraryApiWrapper MediaLibraryApi
 
-<Modal @ref="ActorModal">
+<Modal @ref="_actorModal">
     <ModalContent Centered>
         <Form>
             <ModalHeader>
@@ -11,11 +11,11 @@
             <ModalBody>
                 <Field>
                     <FieldLabel>Имя исполнителя</FieldLabel>
-                    <InputText @bind-Value="NewActor.Name" />
+                    <InputText @bind-Value="_newActor.Name" />
                 </Field>
                 <Field>
                     <FieldLabel>Описание исполнителя</FieldLabel>
-                    <InputTextArea @bind-Value="NewActor.Description" />
+                    <InputTextArea @bind-Value="_newActor.Description" />
                 </Field>
             </ModalBody>
 
@@ -31,23 +31,23 @@
     [Parameter]
     public EventCallback OnActorAdded { get; set; }
 
-    private Modal ActorModal { get; set; } = new();
-    private ActorDto NewActor { get; set; } = new();
+    private Modal _actorModal = new();
+    private ActorDto _newActor = new();
 
-    public async Task Show() => await ActorModal.Show();
+    public async Task Show() => await _actorModal.Show();
 
     private async Task CloseActorModalAsync()
     {
 
-        NewActor = new ActorDto();
-        await ActorModal.Hide();
+        _newActor = new ActorDto();
+        await _actorModal.Hide();
     }
 
     private async Task CreateActorAsync()
     {
-        await MediaLibraryApi.CreateActor(NewActor);
-        NewActor = new ActorDto();
-        await ActorModal.Hide();
+        await MediaLibraryApi.CreateActor(_newActor);
+        _newActor = new ActorDto();
+        await _actorModal.Hide();
         await OnActorAdded.InvokeAsync();
        
     }
